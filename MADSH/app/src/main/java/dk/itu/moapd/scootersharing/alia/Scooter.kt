@@ -1,31 +1,31 @@
 package dk.itu.moapd.scootersharing.alia
 
 class Scooter {
-    private var name : String
-    private var location : String
+    private var name:String
+    private var location:String
 
-    constructor ( name : String , location : String ) {
+    constructor(name:String, location:String) {
         this.name = name
         this.location = location
     }
 
-    fun getName () : String {
+    fun getName():String {
         return name
     }
 
-    fun setName ( name : String ) {
+    fun setName(name:String) {
         this.name = name
     }
 
-    fun getLocation () : String {
+    fun getLocation():String {
         return location
     }
 
-    fun setLocation ( location : String ) {
+    fun setLocation(location:String) {
         this.location = location
     }
 
-    override fun toString () : String {
-        return "[ Scooter ] $name is placed at $location ."
+    override fun toString():String {
+        return "[Scooter] $name is placed at $location."
     }
 }
