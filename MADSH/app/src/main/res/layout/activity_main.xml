@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:context=".MainActivity"
     android:gravity="center"
@@ -15,11 +16,12 @@
     android:layout_height="wrap_content">
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textField"
+            android:id="@+id/edit_text_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:minWidth="88dp"
             android:maxWidth="488dp"
+            app:endIconMode="clear_text"
             android:hint="@string/scooter_name">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -29,10 +31,6 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <EditText
-            android:id="@+id/edit_text_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
     </LinearLayout>
 
     <!-- Scooter Location  -->
@@ -40,16 +38,22 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="5dp">
-        
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Location"/>
-        
-        <EditText
+
+        <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/edit_text_location"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:minWidth="88dp"
+            android:maxWidth="488dp"
+            app:endIconMode="clear_text"
+            android:hint="@string/scooter_location">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                />
+
+        </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
 
     <View
@@ -60,6 +64,12 @@
     <Button
         android:id="@+id/start_ride_button"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:text="Start Ride"
+        app:backgroundTint="@color/purple_350"
+        app:cornerRadius="100dp"
+        android:textAllCaps="false"
+        android:paddingHorizontal="25dp"
+        android:paddingVertical="15dp"/>
 
 </LinearLayout>
