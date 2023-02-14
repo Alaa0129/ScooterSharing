@@ -3,4 +3,5 @@
     <string name="scooter_name">Enter the scooter name</string>
     <string name="scooter_location">Enter your location</string>
     <string name="start_ride">Start Ride</string>
+    <string name="update_ride">Update Ride</string>
 </resources>

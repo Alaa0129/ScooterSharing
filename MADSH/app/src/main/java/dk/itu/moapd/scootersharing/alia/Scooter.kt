@@ -20,15 +20,17 @@
  */
 package dk.itu.moapd.scootersharing.alia
 
+import java.text.DateFormat
+
 /**
  * The Scooter class which holds data about the Scooter.
  */
-data class Scooter (var name:String, var location:String) {
+data class Scooter (var name:String, var location:String, var timestamp:Long = System.currentTimeMillis()) {
 
     /**
-     * @return the scooter name and location as a string.
+     * @return the time stamp, scooter name and location as a string.
      */
     override fun toString():String {
-        return "[Scooter] $name which is placed at $location."
+        return "'$name' which is placed at $location on ${DateFormat.getDateTimeInstance().format(timestamp)}."
     }
 }
