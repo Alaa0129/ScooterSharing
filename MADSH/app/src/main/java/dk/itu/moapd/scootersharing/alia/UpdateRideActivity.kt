@@ -15,6 +15,7 @@ class UpdateRideActivity : AppCompatActivity() {
     // A set of private constants used in this class.
     companion object {
         private val TAG = UpdateRideActivity::class.qualifiedName
+        lateinit var ridesDB : RidesDB
     }
 
     /**
@@ -25,11 +26,6 @@ class UpdateRideActivity : AppCompatActivity() {
      */
     // GUI variables.
     private lateinit var updateRideBinding: ActivityUpdateRideBinding
-
-    /**
-     * A @property Scooter used to pass data into by the user. Initially @returns an empty scooter.
-     */
-    private val scooter:Scooter = Scooter("", "")
 
     /**
      * Called when the activity is starting. This is where most initialization should go: calling
@@ -50,6 +46,8 @@ class UpdateRideActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_update_ride)
+        ridesDB = RidesDB.get(this)
+
 
         // Migrate from Kotlin synthetics to Jetpack view binding.
         // https://developer.android.com/topic/libraries/view-binding/migration
@@ -65,13 +63,13 @@ class UpdateRideActivity : AppCompatActivity() {
                     // Update the object attributes.
                     val nameLocation = editTextLocation.text.toString().trim()
 
-                    scooter.location = nameLocation
+                    ridesDB.updateCurrentScooterLocation(nameLocation)
 
                     // Reset the text fields and update the UI.
                     editTextLocation.text?.clear()
 
                     // Display ride info above editTextName, using a snackbar.
-                    val snackbar = Snackbar.make(it, "Ride started using $scooter", Snackbar.LENGTH_LONG)
+                    val snackbar = Snackbar.make(it, "Ride started using ${ridesDB.getCurrentScooter()}", Snackbar.LENGTH_LONG)
                         .setAction("Action", null)
                     snackbar.setActionTextColor(getColor(R.color.lightGrey))
                     snackbar.anchorView = editTextName
@@ -92,6 +90,6 @@ class UpdateRideActivity : AppCompatActivity() {
 
     private fun showMessage () {
         // Print a message in the ‘Logcat‘ system.
-        Log.d(UpdateRideActivity.TAG, scooter.toString())
+        Log.d(UpdateRideActivity.TAG, ridesDB.getCurrentScooterInfo())
     }
 }

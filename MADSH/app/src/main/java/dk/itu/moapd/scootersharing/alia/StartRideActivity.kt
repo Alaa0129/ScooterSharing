@@ -14,6 +14,7 @@ class StartRideActivity : AppCompatActivity() {
     // A set of private constants used in this class.
     companion object {
         private val TAG = StartRideActivity::class.qualifiedName
+        lateinit var ridesDB : RidesDB
     }
 
     /**
@@ -24,11 +25,6 @@ class StartRideActivity : AppCompatActivity() {
      */
     // GUI variables.
     private lateinit var startRideBinding: ActivityStartRideBinding
-
-    /**
-     * A @property Scooter used to pass data into by the user. Initially @returns an empty scooter.
-     */
-    private val scooter:Scooter = Scooter("", "")
 
     /**
      * Called when the activity is starting. This is where most initialization should go: calling
@@ -49,6 +45,7 @@ class StartRideActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_start_ride)
+        ridesDB = RidesDB.get(this)
 
         // Migrate from Kotlin synthetics to Jetpack view binding.
         // https://developer.android.com/topic/libraries/view-binding/migration
@@ -65,15 +62,14 @@ class StartRideActivity : AppCompatActivity() {
                     val nameScooter = editTextName.text.toString().trim()
                     val nameLocation = editTextLocation.text.toString().trim()
 
-                    scooter.name = nameScooter
-                    scooter.location = nameLocation
+                    ridesDB.addScooter(nameScooter, nameLocation)
 
                     // Reset the text fields and update the UI.
                     editTextName.text?.clear()
                     editTextLocation.text?.clear()
 
                     // Display ride info above editTextName, using a snackbar.
-                    val snackbar = Snackbar.make(it, "Ride started using $scooter", Snackbar.LENGTH_LONG)
+                    val snackbar = Snackbar.make(it, "Ride started using ${ridesDB.getCurrentScooter()}", Snackbar.LENGTH_LONG)
                         .setAction("Action", null)
                     snackbar.setActionTextColor(getColor(R.color.lightGrey))
                     snackbar.anchorView = editTextName
@@ -94,6 +90,6 @@ class StartRideActivity : AppCompatActivity() {
 
     private fun showMessage () {
         // Print a message in the ‘Logcat‘ system.
-        Log.d(StartRideActivity.TAG, scooter.toString())
+        Log.d(StartRideActivity.TAG, ridesDB.getCurrentScooterInfo())
     }
 }
