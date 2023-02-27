@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     tools:context=".MainActivity">
-
     <include android:id="@+id/content"
         layout="@layout/content_main" />
 </androidx.drawerlayout.widget.DrawerLayout>

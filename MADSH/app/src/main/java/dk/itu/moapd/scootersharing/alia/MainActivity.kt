@@ -9,8 +9,19 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var mainBinding: ActivityMainBinding
 
+    companion object {
+        private lateinit var adapter: RideListAdapter
+        private lateinit var ridesDB: RidesDB
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        ridesDB = RidesDB.get(this)
+
+        adapter = RideListAdapter(this, R.layout.list_rides, ridesDB.getRidesList())
+        mainBinding = ActivityMainBinding.inflate(layoutInflater)
+        mainBinding.content.ridesListView.adapter = adapter
+
         setContentView(R.layout.activity_main)
         mainBinding = ActivityMainBinding.inflate(layoutInflater)
         mainBinding.content.apply {

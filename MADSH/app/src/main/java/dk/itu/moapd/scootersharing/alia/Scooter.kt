@@ -31,6 +31,10 @@ data class Scooter (val name:String, var location:String, var timestamp:Long = S
      * @return the time stamp, scooter name and location as a string.
      */
     override fun toString():String {
-        return "'$name' which is placed at $location on ${DateFormat.getDateTimeInstance().format(timestamp)}."
+        return "'$name' which is placed at $location on ${dateFormatted()}."
+    }
+
+    fun dateFormatted(): String {
+        return DateFormat.getDateTimeInstance().format(timestamp)
     }
 }

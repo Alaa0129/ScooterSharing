@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
-import dk.itu.moapd.scootersharing.alia.databinding.ActivityStartRideBinding
 import dk.itu.moapd.scootersharing.alia.databinding.ActivityUpdateRideBinding
 
 /**
