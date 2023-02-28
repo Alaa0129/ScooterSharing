@@ -7,10 +7,10 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.TextView
 
-class RideListAdapter(context: Context, private var resource: Int, private val rides: List<Scooter>)
+class RideListAdapter(context: Context, private var resource: Int, rides: List<Scooter>)
     : ArrayAdapter<Scooter>(context, R.layout.list_rides, rides) {
 
-    private class RidesHolder(view: View) {
+    private class ViewHolder(view: View) {
         val name: TextView = view.findViewById(R.id.ride_name)
         val location: TextView = view.findViewById(R.id.ride_location)
         val date: TextView = view.findViewById(R.id.ride_date)
@@ -18,16 +18,23 @@ class RideListAdapter(context: Context, private var resource: Int, private val r
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         var view = convertView
-        val viewHolder: RidesHolder
+        val viewHolder: ViewHolder
 
         if (view == null) {
             val inflater = LayoutInflater.from(context)
             view = inflater.inflate(resource, parent, false)
-            viewHolder = RidesHolder(view)
+            viewHolder = ViewHolder(view)
         } else {
-            viewHolder = view.tag as RidesHolder
-            view.tag = viewHolder
+            viewHolder = view.tag as ViewHolder
         }
+
+        val entity = getItem(position)
+
+        viewHolder.name.text = entity?.name
+        viewHolder.location.text = entity?.location
+        viewHolder.date.text = entity?.timestamp.toString()
+
+        view?.tag = viewHolder
         return view!!
     }
 }

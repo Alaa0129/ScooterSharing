@@ -16,13 +16,15 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        mainBinding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(mainBinding.root)
+
         ridesDB = RidesDB.get(this)
 
         adapter = RideListAdapter(this, R.layout.list_rides, ridesDB.getRidesList())
-        mainBinding = ActivityMainBinding.inflate(layoutInflater)
-        mainBinding.content.ridesListView.adapter = adapter
+        mainBinding.content.listView.adapter = adapter
 
-        setContentView(R.layout.activity_main)
         mainBinding = ActivityMainBinding.inflate(layoutInflater)
         mainBinding.content.apply {
 
@@ -37,8 +39,5 @@ class MainActivity : AppCompatActivity() {
                 startActivity(intent)
             }
         }
-
-        val view = mainBinding.root
-        setContentView(view)
     }
 }
