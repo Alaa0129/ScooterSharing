@@ -32,7 +32,7 @@ class RideListAdapter(context: Context, private var resource: Int, rides: List<S
 
         viewHolder.name.text = entity?.name
         viewHolder.location.text = entity?.location
-        viewHolder.date.text = entity?.timestamp.toString()
+        viewHolder.date.text = entity?.dateFormatted()
 
         view?.tag = viewHolder
         return view!!
