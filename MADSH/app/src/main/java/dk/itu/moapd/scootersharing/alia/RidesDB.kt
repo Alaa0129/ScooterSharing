@@ -14,6 +14,9 @@ class RidesDB private constructor(context: Context) {
         rides.add(Scooter("CPH003", "DR Byen", randomDate()))
         rides.add(Scooter("CPH004", "Nørrebro St.", randomDate()))
         rides.add(Scooter("CPH005", "Lufthavn", randomDate()))
+        rides.add(Scooter("CPH006", "Ballerup", randomDate()))
+        rides.add(Scooter("CPH007", "Vestamager", randomDate()))
+        rides.add(Scooter("CPH008", "Roskilde", randomDate()))
     }
 
     /**

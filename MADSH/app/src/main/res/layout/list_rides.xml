@@ -10,31 +10,34 @@
         android:id="@+id/ride_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="18sp"
+        android:textSize="16sp"
         android:textStyle="bold"
         android:textColor="@color/black">
     </TextView>
+
+    <View
+        android:layout_width="1dp"
+        android:layout_height="26dp"
+        android:layout_marginStart="10dp"
+        android:background="@color/lightGrey">
+    </View>
 
     <TextView
         android:id="@+id/ride_location"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="18sp"
+        android:textSize="16sp"
         android:textColor="@color/black"
-        android:paddingHorizontal="20dp">
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp">
     </TextView>
 
     <TextView
         android:id="@+id/ride_date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="18sp"
+        android:textSize="12sp"
         android:textColor="@color/black">
     </TextView>
 
-    <View
-        android:layout_width="1dp"
-        android:layout_height="match_parent"
-        android:background="@color/lightGrey">
-    </View>
 </LinearLayout>
