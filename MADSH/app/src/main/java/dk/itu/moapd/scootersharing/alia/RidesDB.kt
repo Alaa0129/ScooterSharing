@@ -14,6 +14,16 @@ class RidesDB private constructor(context: Context) {
         rides.add(Scooter("CPH003", "DR Byen", randomDate()))
         rides.add(Scooter("CPH004", "Nørrebro St.", randomDate()))
         rides.add(Scooter("CPH005", "Lufthavn", randomDate()))
+        rides.add(Scooter("CPH006", "Roskilde", randomDate()))
+        rides.add(Scooter("CPH007", "Fisketorvet", randomDate()))
+        rides.add(Scooter("CPH008", "Ballerup", randomDate()))
+        rides.add(Scooter("CPH009", "Vestamager", randomDate()))
+        rides.add(Scooter("CPH0010", "Islands Brygge", randomDate()))
+        rides.add(Scooter("CPH0011", "Nørreport", randomDate()))
+        rides.add(Scooter("CPH0012", "Vesterbro", randomDate()))
+        rides.add(Scooter("CPH0013", "Hovedbanegården", randomDate()))
+        rides.add(Scooter("CPH0014", "Istedgade", randomDate()))
+        rides.add(Scooter("CPH0015", "Rødovre Centrum", randomDate()))
     }
 
     /**

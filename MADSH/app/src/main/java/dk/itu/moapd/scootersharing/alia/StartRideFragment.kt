@@ -70,7 +70,6 @@ class StartRideFragment : Fragment() {
                 snackbar.duration = 5000
 
                 snackbar.show()
-
                 showMessage()
             }
         }

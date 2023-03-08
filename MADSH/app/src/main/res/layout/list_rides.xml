@@ -26,16 +26,17 @@
         android:id="@+id/ride_location"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="16sp"
+        android:textSize="12sp"
         android:textColor="@color/black"
-        android:paddingHorizontal="20dp">
+        android:paddingStart="20dp"
+        android:paddingEnd="10dp">
     </TextView>
 
     <TextView
         android:id="@+id/ride_date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="12sp"
+        android:textSize="11sp"
         android:textColor="@color/black">
     </TextView>
 </LinearLayout>
