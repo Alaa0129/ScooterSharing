@@ -46,8 +46,17 @@
         android:paddingVertical="15dp"
         app:icon="@drawable/baseline_edit_24" />
 
-    <ListView
-        android:id="@+id/list_view"
+    <!-- Button to show list of rides  -->
+    <Button
+        android:id="@+id/list_rides_button"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content"
+        android:text="@string/list_rides"
+        app:backgroundTint="@color/purple_350"
+        app:cornerRadius="100dp"
+        android:textAllCaps="false"
+        android:layout_gravity="center"
+        android:paddingHorizontal="25dp"
+        android:paddingVertical="15dp"
+        app:icon="@drawable/baseline_edit_24" />
 </LinearLayout>
