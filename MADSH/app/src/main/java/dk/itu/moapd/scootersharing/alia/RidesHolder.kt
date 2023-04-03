@@ -7,6 +7,5 @@ class RidesHolder(private val binding: ListRidesBinding) : RecyclerView.ViewHold
     fun bind(scooter: Scooter) {
         binding.rideName.text = binding.root.context.getString(R.string.scooter_name, scooter.name)
         binding.rideLocation.text = binding.root.context.getString(R.string.scooter_location, scooter.location)
-        binding.rideDate.text = binding.root.context.getString(R.string.ride_date, scooter.dateFormatted())
     }
 }
