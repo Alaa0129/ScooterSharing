@@ -13,7 +13,6 @@ class RideListAdapter(context: Context, private var resource: Int, rides: List<S
     private class ViewHolder(view: View) {
         val name: TextView = view.findViewById(R.id.ride_name)
         val location: TextView = view.findViewById(R.id.ride_location)
-        val date: TextView = view.findViewById(R.id.ride_date)
     }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
@@ -32,7 +31,6 @@ class RideListAdapter(context: Context, private var resource: Int, rides: List<S
 
         viewHolder.name.text = entity?.name
         viewHolder.location.text = entity?.location
-        viewHolder.date.text = entity?.dateFormatted()
 
         view?.tag = viewHolder
         return view!!

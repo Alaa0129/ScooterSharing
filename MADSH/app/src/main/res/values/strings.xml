@@ -5,4 +5,5 @@
     <string name="start_ride">Start Ride</string>
     <string name="update_ride">Update Ride</string>
     <string name="list_rides">List Rides</string>
+    <string name="content_description_image">Delete scooter</string>
 </resources>
