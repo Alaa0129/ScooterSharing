@@ -5,7 +5,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import dk.itu.moapd.scootersharing.alia.databinding.FragmentListRidesBinding
+import dk.itu.moapd.scootersharing.alia.databinding.ListRidesBinding
 
 class ListRidesFragment : Fragment() {
     private var _binding: FragmentListRidesBinding? = null
@@ -15,7 +18,6 @@ class ListRidesFragment : Fragment() {
         }
 
     companion object {
-        private lateinit var adapter: RideListAdapter
         private lateinit var ridesDB: RidesDB
     }
 
@@ -23,13 +25,21 @@ class ListRidesFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         ridesDB = RidesDB.get(requireContext())
-        adapter = RideListAdapter(requireContext(), R.layout.list_rides, ridesDB.getRidesList())
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentListRidesBinding.inflate(inflater, container, false)
-        _binding?.listView?.adapter = adapter
+
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val rides = ridesDB.getRidesList()
+        val adapter = RideListAdapter(rides)
+        binding.recyclerView.layoutManager = LinearLayoutManager(context)
+        binding.recyclerView.adapter = adapter
     }
 
     override fun onDestroyView() {

@@ -1,40 +1,23 @@
 package dk.itu.moapd.scootersharing.alia
 
-import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
+import dk.itu.moapd.scootersharing.alia.databinding.ListRidesBinding
 
-class RideListAdapter(context: Context, private var resource: Int, rides: List<Scooter>)
-    : ArrayAdapter<Scooter>(context, R.layout.list_rides, rides) {
+class RideListAdapter(private val rides: List<Scooter>)
+    : RecyclerView.Adapter<RidesHolder>() {
 
-    private class ViewHolder(view: View) {
-        val name: TextView = view.findViewById(R.id.ride_name)
-        val location: TextView = view.findViewById(R.id.ride_location)
-        val date: TextView = view.findViewById(R.id.ride_date)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RidesHolder {
+        val inflater = LayoutInflater.from(parent.context)
+        val binding = ListRidesBinding.inflate(inflater, parent, false)
+        return RidesHolder(binding)
     }
 
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-        var view = convertView
-        val viewHolder: ViewHolder
-
-        if (view == null) {
-            val inflater = LayoutInflater.from(context)
-            view = inflater.inflate(resource, parent, false)
-            viewHolder = ViewHolder(view)
-        } else {
-            viewHolder = view.tag as ViewHolder
-        }
-
-        val entity = getItem(position)
-
-        viewHolder.name.text = entity?.name
-        viewHolder.location.text = entity?.location
-        viewHolder.date.text = entity?.dateFormatted()
-
-        view?.tag = viewHolder
-        return view!!
+    override fun onBindViewHolder(holder: RidesHolder, position: Int) {
+        val ride = rides[position]
+        holder.bind(ride)
     }
+
+    override fun getItemCount() = rides.size
 }

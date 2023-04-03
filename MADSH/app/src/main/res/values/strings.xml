@@ -1,8 +1,11 @@
 <resources>
     <string name="app_name">Scooter Sharing</string>
-    <string name="scooter_name">Enter the scooter name</string>
-    <string name="scooter_location">Enter your location</string>
+    <string name="enter_scooter_name">Enter the scooter name</string>
+    <string name="enter_scooter_location">Enter your location</string>
     <string name="start_ride">Start Ride</string>
     <string name="update_ride">Update Ride</string>
     <string name="list_rides">List Rides</string>
+    <string name="scooter_name">%1$s</string>
+    <string name="scooter_location">%1$s</string>
+    <string name="ride_date">%1$s</string>
 </resources>

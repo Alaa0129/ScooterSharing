@@ -22,7 +22,7 @@
             android:minWidth="88dp"
             android:maxWidth="488dp"
             app:endIconMode="clear_text"
-            android:hint="@string/scooter_name"
+            android:hint="@string/enter_scooter_name"
             app:startIconDrawable="@drawable/baseline_electric_scooter_24">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -45,7 +45,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:endIconMode="clear_text"
-            android:hint="@string/scooter_location"
+            android:hint="@string/enter_scooter_location"
             app:startIconDrawable="@drawable/baseline_add_location_24">
 
             <com.google.android.material.textfield.TextInputEditText
