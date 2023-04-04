@@ -6,9 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import dk.itu.moapd.scootersharing.alia.databinding.FragmentListRidesBinding
-import dk.itu.moapd.scootersharing.alia.databinding.ListRidesBinding
 
 class ListRidesFragment : Fragment() {
     private var _binding: FragmentListRidesBinding? = null
@@ -29,7 +27,6 @@ class ListRidesFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentListRidesBinding.inflate(inflater, container, false)
-
         return binding.root
     }
 

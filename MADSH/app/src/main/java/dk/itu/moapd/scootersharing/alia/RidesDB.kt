@@ -48,6 +48,17 @@ class RidesDB private constructor(context: Context) {
         rides.last().location = location
     }
 
+    fun removeScooter(scooter: Scooter) {
+        rides.remove(scooter)
+    }
+
+    fun removeScooter(name: String) {
+        val scooterToRemove = rides.firstOrNull { scooter -> scooter.name == name }
+        if (scooterToRemove != null) {
+            rides.remove(scooterToRemove)
+        }
+    }
+
     /**
      * @return The most recently created scooter.
      */
