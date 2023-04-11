@@ -2,7 +2,6 @@ package dk.itu.moapd.scootersharing.alia
 
 import android.content.Context
 import java.text.DateFormat
-import java.util.*
 import kotlin.collections.ArrayList
 
 class RidesDB private constructor(context: Context) {

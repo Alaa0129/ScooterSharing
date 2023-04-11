@@ -3,7 +3,6 @@ package dk.itu.moapd.scootersharing.alia
 import androidx.recyclerview.widget.RecyclerView
 import dk.itu.moapd.scootersharing.alia.databinding.ListRidesBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.snackbar.Snackbar
 
 class RidesHolder(private val binding: ListRidesBinding) : RecyclerView.ViewHolder(binding.root) {
 

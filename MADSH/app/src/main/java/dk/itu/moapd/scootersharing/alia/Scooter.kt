@@ -34,7 +34,7 @@ data class Scooter (val name:String, var location:String, var timestamp:Long = S
         return "'$name' which is placed at $location on ${dateFormatted()}."
     }
 
-    fun dateFormatted(): String {
+    private fun dateFormatted(): String {
         return DateFormat.getDateTimeInstance().format(timestamp)
     }
 }
