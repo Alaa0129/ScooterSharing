@@ -1,8 +1,10 @@
-package dk.itu.moapd.scootersharing.alia
+package dk.itu.moapd.scootersharing.alia.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import dk.itu.moapd.scootersharing.alia.utils.RidesHolder
+import dk.itu.moapd.scootersharing.alia.models.Scooter
 import dk.itu.moapd.scootersharing.alia.databinding.ListRidesBinding
 
 class RideListAdapter(private val rides: List<Scooter>)

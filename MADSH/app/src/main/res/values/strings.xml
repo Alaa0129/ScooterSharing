@@ -7,7 +7,6 @@
     <string name="list_rides">List Rides</string>
     <string name="scooter_name">%1$s</string>
     <string name="scooter_location">%1$s</string>
-    <string name="ride_date">%1$s</string>
     <string name="content_description_image">Delete scooter</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>

@@ -1,6 +1,7 @@
 package dk.itu.moapd.scootersharing.alia
 
 import android.content.Context
+import dk.itu.moapd.scootersharing.alia.models.Scooter
 import java.text.DateFormat
 import kotlin.collections.ArrayList
 

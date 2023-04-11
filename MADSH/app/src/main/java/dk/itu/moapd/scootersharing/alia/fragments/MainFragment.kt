@@ -1,4 +1,4 @@
-package dk.itu.moapd.scootersharing.alia
+package dk.itu.moapd.scootersharing.alia.fragments
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
+import dk.itu.moapd.scootersharing.alia.R
 import dk.itu.moapd.scootersharing.alia.databinding.FragmentMainBinding
 
 class MainFragment : Fragment() {
