@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/mainFragment">
+
+    <fragment
+        android:id="@+id/mainFragment"
+        android:name="dk.itu.moapd.scootersharing.alia.MainFragment"
+        android:label="fragment_main"
+        tools:layout="@layout/fragment_main" >
+        <action
+            android:id="@+id/action_mainFragment_to_startRideFragment"
+            app:destination="@id/startRideFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_updateRideFragment"
+            app:destination="@id/updateRideFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_listRidesFragment"
+            app:destination="@id/listRidesFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/startRideFragment"
+        android:name="dk.itu.moapd.scootersharing.alia.StartRideFragment"
+        android:label="fragment_start_ride"
+        tools:layout="@layout/fragment_start_ride" />
+    <fragment
+        android:id="@+id/updateRideFragment"
+        android:name="dk.itu.moapd.scootersharing.alia.UpdateRideFragment"
+        android:label="fragment_update_ride"
+        tools:layout="@layout/fragment_update_ride" />
+    <fragment
+        android:id="@+id/listRidesFragment"
+        android:name="dk.itu.moapd.scootersharing.alia.ListRidesFragment"
+        android:label="fragment_list_rides"
+        tools:layout="@layout/fragment_list_rides" />
+</navigation>

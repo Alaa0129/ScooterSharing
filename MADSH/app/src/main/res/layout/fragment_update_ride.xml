@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:gravity="center"
-    tools:context=".UpdateRideActivity"
+    tools:context=".UpdateRideFragment"
     android:layout_height="match_parent"
     android:layout_width="match_parent">
 
@@ -22,7 +22,7 @@
             android:minWidth="88dp"
             android:maxWidth="488dp"
             app:endIconMode="clear_text"
-            android:hint="@string/scooter_name"
+            android:hint="@string/enter_scooter_name"
             app:startIconDrawable="@drawable/baseline_electric_scooter_24">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -31,10 +31,8 @@
                 android:layout_height="wrap_content"
                 android:singleLine="true"
                 android:ellipsize="end"
-                android:enabled="false"/>
-
+                android:enabled="false" />
         </com.google.android.material.textfield.TextInputLayout>
-
     </LinearLayout>
 
     <!-- Scooter Location  -->
@@ -47,7 +45,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:endIconMode="clear_text"
-            android:hint="@string/scooter_location"
+            android:hint="@string/enter_scooter_location"
             app:startIconDrawable="@drawable/baseline_add_location_24">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -55,14 +53,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:singleLine="true"
-                android:ellipsize="end"/>
-
+                android:ellipsize="end" />
         </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="20dp"/>
+        android:layout_height="20dp" />
 
     <!-- Button to update a ride  -->
     <Button
@@ -77,6 +74,5 @@
         android:paddingHorizontal="25dp"
         android:paddingVertical="15dp"
         android:layout_marginEnd="15dp"
-        />
-
+        android:layout_marginBottom="15dp"/>
 </LinearLayout>
