@@ -1,0 +1,71 @@
+{
+  "project_info": {
+    "project_number": "734876391484",
+    "project_id": "scootersharing-jokf-alia",
+    "storage_bucket": "scootersharing-jokf-alia.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:734876391484:android:04869c93ab2ba94b824b39",
+        "android_client_info": {
+          "package_name": "dk.itu.moapd.scootersharing.alia"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "734876391484-3s9ihp130cv5bhpe5gfhf174960ah6di.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "dk.itu.moapd.scootersharing.alia",
+            "certificate_hash": "b92606a9dbecf112c1be3e01718081947d3a8a16"
+          }
+        },
+        {
+          "client_id": "734876391484-mj3fkq1hcltcov518jqu4oosoi19nk9h.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "dk.itu.moapd.scootersharing.alia",
+            "certificate_hash": "eed842c9e5a1edbce4c8cdfa0420deca61531ecd"
+          }
+        },
+        {
+          "client_id": "734876391484-ris3j719u4omcop3guagbl3jthdcim2q.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "dk.itu.moapd.scootersharing.alia",
+            "certificate_hash": "52c6fe82e06630b87d72a06a6dc86176275a630c"
+          }
+        },
+        {
+          "client_id": "734876391484-ss43tq4armov8k5b2l275p3jpv98tm8p.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "dk.itu.moapd.scootersharing.alia",
+            "certificate_hash": "dafb6f823e2db355f2ed7bc7f8d5754db24d5f32"
+          }
+        },
+        {
+          "client_id": "734876391484-9s5f5o7lcom1lobffhge23kmvmvecb6o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBTVqT_R6E2_ypxIUj05RkzZmOnkK2K-yY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "734876391484-9s5f5o7lcom1lobffhge23kmvmvecb6o.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
