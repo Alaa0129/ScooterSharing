@@ -1,8 +1,11 @@
-package dk.itu.moapd.scootersharing.alia
+package dk.itu.moapd.scootersharing.alia.utils
 
 import androidx.recyclerview.widget.RecyclerView
 import dk.itu.moapd.scootersharing.alia.databinding.ListRidesBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import dk.itu.moapd.scootersharing.alia.R
+import dk.itu.moapd.scootersharing.alia.RidesDB
+import dk.itu.moapd.scootersharing.alia.models.Scooter
 
 class RidesHolder(private val binding: ListRidesBinding) : RecyclerView.ViewHolder(binding.root) {
 

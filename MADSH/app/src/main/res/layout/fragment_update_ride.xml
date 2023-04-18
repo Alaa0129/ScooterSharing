@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:gravity="center"
-    tools:context=".UpdateRideFragment"
+    tools:context=".fragments.UpdateRideFragment"
     android:layout_height="match_parent"
     android:layout_width="match_parent">
 

@@ -1,8 +1,9 @@
-package dk.itu.moapd.scootersharing.alia
+package dk.itu.moapd.scootersharing.alia.activities
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.navigation.fragment.NavHostFragment
+import dk.itu.moapd.scootersharing.alia.R
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

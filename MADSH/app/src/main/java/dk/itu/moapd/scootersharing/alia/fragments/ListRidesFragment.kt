@@ -1,4 +1,4 @@
-package dk.itu.moapd.scootersharing.alia
+package dk.itu.moapd.scootersharing.alia.fragments
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
+import dk.itu.moapd.scootersharing.alia.adapters.RideListAdapter
+import dk.itu.moapd.scootersharing.alia.RidesDB
 import dk.itu.moapd.scootersharing.alia.databinding.FragmentListRidesBinding
 
 class ListRidesFragment : Fragment() {

@@ -1,4 +1,4 @@
-package dk.itu.moapd.scootersharing.alia
+package dk.itu.moapd.scootersharing.alia.fragments
 
 import android.content.Intent
 import android.os.Bundle
@@ -10,6 +10,8 @@ import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import dk.itu.moapd.scootersharing.alia.activities.LoginActivity
+import dk.itu.moapd.scootersharing.alia.R
 import dk.itu.moapd.scootersharing.alia.databinding.FragmentMainBinding
 
 class MainFragment : Fragment() {

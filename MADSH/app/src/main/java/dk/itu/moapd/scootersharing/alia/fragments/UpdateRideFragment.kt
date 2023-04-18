@@ -1,4 +1,4 @@
-package dk.itu.moapd.scootersharing.alia
+package dk.itu.moapd.scootersharing.alia.fragments
 
 import android.os.Bundle
 import android.util.Log
@@ -7,19 +7,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.google.android.material.snackbar.Snackbar
-import dk.itu.moapd.scootersharing.alia.databinding.FragmentStartRideBinding
+import dk.itu.moapd.scootersharing.alia.R
+import dk.itu.moapd.scootersharing.alia.RidesDB
+import dk.itu.moapd.scootersharing.alia.databinding.FragmentUpdateRideBinding
 
-class StartRideFragment : Fragment() {
-    private var _binding: FragmentStartRideBinding? = null
+class UpdateRideFragment : Fragment() {
+    private var _binding: FragmentUpdateRideBinding? = null
     private val binding
         get() = checkNotNull(_binding) {
             "Cannot access binding because it is null. Is the view visible?"
         }
     companion object {
-        private val TAG = StartRideFragment::class.qualifiedName
+        private val TAG = FragmentUpdateRideBinding::class.qualifiedName
         private lateinit var ridesDB: RidesDB
     }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -35,24 +36,22 @@ class StartRideFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentStartRideBinding.inflate(inflater, container, false)
+        _binding = FragmentUpdateRideBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.startRideButton.setOnClickListener {
-            if (binding.editTextName.text!!.isNotEmpty() && binding.editTextLocation.text!!.isNotEmpty()) {
+        binding.updateRideButton.setOnClickListener {
+            if (binding.editTextLocation.text!!.isNotEmpty()) {
 
                 // Update the object attributes.
-                val nameScooter = binding.editTextName.text.toString().trim()
                 val nameLocation = binding.editTextLocation.text.toString().trim()
 
-                ridesDB.addScooter(nameScooter, nameLocation)
+                ridesDB.updateCurrentScooterLocation(nameLocation)
 
                 // Reset the text fields and update the UI.
-                binding.editTextName.text?.clear()
                 binding.editTextLocation.text?.clear()
 
                 // Display ride info above editTextName, using a snackbar.
@@ -70,6 +69,7 @@ class StartRideFragment : Fragment() {
                 snackbar.duration = 5000
 
                 snackbar.show()
+
                 showMessage()
             }
         }
