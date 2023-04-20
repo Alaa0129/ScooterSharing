@@ -2,30 +2,22 @@ package dk.itu.moapd.scootersharing.alia
 
 import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat.checkSelfPermission
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import android.content.pm.PackageManager
-import android.content.res.Configuration
-import android.location.Address
-import android.location.Geocoder
-import android.location.Location
-import android.os.Build
-import android.os.Looper
-import android.util.Log
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat.checkSelfPermission
-import com.google.android.gms.location.*
-import java.util.*
-import kotlin.collections.ArrayList
 import dk.itu.moapd.scootersharing.alia.databinding.FragmentMainBinding
-import java.text.SimpleDateFormat
 
 class MainFragment : Fragment() {
     private var _binding: FragmentMainBinding? = null
@@ -36,19 +28,10 @@ class MainFragment : Fragment() {
     private lateinit var auth: FirebaseAuth
 
     companion object {
-        private val TAG = MainFragment::class.qualifiedName
         private const val ALL_PERMISSIONS_RESULT = 1011
     }
 
-    /**
-     * The primary instance for receiving location updates.
-     */
-    private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
-
-    /**
-     * This callback is called when `FusedLocationProviderClient` has a new `Location`.
-     */
-    private lateinit var locationCallback: LocationCallback
+    private lateinit var googleSignInClient: GoogleSignInClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,8 +39,14 @@ class MainFragment : Fragment() {
         // Initialize Firebase Auth.
         auth = Firebase.auth
 
-        // Start the location-aware method.
-        startLocationAware()
+        // Initialize Google Sign-In.
+        val options = GoogleSignInOptions
+            .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestEmail()
+            .build()
+        googleSignInClient = GoogleSignIn.getClient(requireActivity(), options)
+
+        requestUserPermissions()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -71,16 +60,6 @@ class MainFragment : Fragment() {
         // Check if the user is not logged and redirect her/him to the LoginActivity.
         if (auth.currentUser == null)
             startLoginActivity()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        subscribeToLocationUpdates()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        unsubscribeToLocationUpdates()
     }
 
     private fun startLoginActivity() {
@@ -110,33 +89,8 @@ class MainFragment : Fragment() {
             auth.signOut()
             startLoginActivity()
         }
-    }
-
-    private fun startLocationAware() {
-
-        // Show a dialog to ask the user to allow the application to access the device's location.
-        requestUserPermissions()
-
-        // Start receiving location updates.
-        fusedLocationProviderClient = LocationServices
-            .getFusedLocationProviderClient(requireContext())
-
-        // Initialize the `LocationCallback`.
-        locationCallback = object : LocationCallback() {
-
-            /**
-             * This method will be executed when `FusedLocationProviderClient` has a new location.
-             *
-             * @param locationResult The last known location.
-             */
-            override fun onLocationResult(locationResult: LocationResult) {
-                super.onLocationResult(locationResult)
-
-                // Updates the user interface components with GPS data location.
-                locationResult.lastLocation?.let { location ->
-                    printLocation(location)
-                }
-            }
+        binding.buttonMaps.setOnClickListener {
+            findNavController().navigate(R.id.mapsFragment)
         }
     }
 
@@ -176,126 +130,4 @@ class MainFragment : Fragment() {
                 result.add(permission)
         return result
     }
-
-    /**
-     * Return the timestamp as a `String`.
-     *
-     * @return The timestamp formatted as a `String` using the default locale.
-     */
-    private fun Long.toDateString() : String {
-        val date = Date(this)
-        val format = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault())
-        return format.format(date)
-    }
-
-    /**
-     * Print the current device's location data.
-     *
-     * @param location The current location data.
-     */
-    private fun printLocation(location: Location) {
-        if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT)
-            Log.d(TAG,"Latitude: ${location.latitude}, Longitude: ${location.longitude}, Date: ${location.time.toDateString()}")
-        else
-            setAddress(location.latitude, location.longitude)
-    }
-
-    /**
-     * Use Geocoder API to convert the current location into a `String` address, and update the
-     * corresponding UI component.
-     *
-     * @param latitude The current latitude coordinate.
-     * @param longitude The current longitude coordinate.
-     */
-    private fun setAddress(latitude: Double, longitude: Double) {
-        if (!Geocoder.isPresent())
-            return
-
-        // Create the `Geocoder` instance.
-        val geocoder = Geocoder(requireContext(), Locale.getDefault())
-
-        // After `Tiramisu Android OS`, it is needed to use a listener to avoid blocking the main
-        // thread waiting for results.
-        val geocodeListener = Geocoder.GeocodeListener { addresses ->
-            addresses.firstOrNull()?.toAddressString()?.let { address ->
-                Log.d(TAG, "Address: $address")
-            }
-        }
-
-        // Return an array of Addresses that attempt to describe the area immediately surrounding
-        // the given latitude and longitude.
-        if (Build.VERSION.SDK_INT >= 33)
-            geocoder.getFromLocation(latitude, longitude, 1, geocodeListener)
-        else
-            geocoder.getFromLocation(latitude, longitude, 1)
-                ?.let {  addresses ->
-                addresses.firstOrNull()?.toAddressString()?.let { address ->
-                    Log.d(TAG, "Address: $address")
-                }
-            }
-    }
-
-    /**
-     * Converts the `Address` instance into a `String` representation.
-     *
-     * @return A `String` with the current address.
-     */
-    private fun Address.toAddressString() : String {
-        val address = this
-
-        // Create a `String` with multiple lines.
-        val stringBuilder = StringBuilder()
-        stringBuilder.apply {
-            append(address.getAddressLine(0)).append("\n")
-            append(address.postalCode).append(" ")
-            append(address.locality).append("\n")
-            append(address.countryName)
-        }
-
-        return stringBuilder.toString()
-    }
-
-    /**
-     * This method checks if the user allows the application uses all location-aware resources to
-     * monitor the user's location.
-     *
-     * @return A boolean value with the user permission agreement.
-     */
-    private fun checkPermission() =
-        ActivityCompat.checkSelfPermission(
-            requireContext(), Manifest.permission.ACCESS_FINE_LOCATION
-        ) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(
-                    requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION
-                ) != PackageManager.PERMISSION_GRANTED
-
-    /**
-     * Subscribes this application to get the location changes via the `locationCallback()`.
-     */
-    private fun subscribeToLocationUpdates() {
-
-        // Check if the user allows the application to access the location-aware resources.
-        if (checkPermission())
-            return
-
-        // Sets the accuracy and desired interval for active location updates.
-        val locationRequest = LocationRequest
-            .Builder(Priority.PRIORITY_HIGH_ACCURACY, 20)
-            .build()
-
-        // Subscribe to location changes.
-        fusedLocationProviderClient.requestLocationUpdates(
-            locationRequest, locationCallback, Looper.getMainLooper()
-        )
-    }
-
-    /**
-     * Unsubscribes this application of getting the location changes from  the `locationCallback()`.
-     */
-    private fun unsubscribeToLocationUpdates() {
-        // Unsubscribe to location changes.
-        fusedLocationProviderClient
-            .removeLocationUpdates(locationCallback)
-    }
-
 }
