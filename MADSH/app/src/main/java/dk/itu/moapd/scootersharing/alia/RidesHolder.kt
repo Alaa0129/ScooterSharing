@@ -28,8 +28,4 @@ class RidesHolder(private val binding: ListRidesBinding) : RecyclerView.ViewHold
             }
             .show()
     }
-
-    /*private fun showSnackbar() {
-        val snackbar = Snackbar.make(, "Ride deleted", Snackbar.LENGTH_LONG)
-    }*/
 }
