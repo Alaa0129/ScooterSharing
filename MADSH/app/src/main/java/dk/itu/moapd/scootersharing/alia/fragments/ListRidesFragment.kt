@@ -15,11 +15,10 @@ import com.google.firebase.ktx.Firebase
 import dk.itu.moapd.scootersharing.alia.R
 import dk.itu.moapd.scootersharing.alia.adapters.RidesListFirebaseAdapter
 import dk.itu.moapd.scootersharing.alia.databinding.FragmentListRidesBinding
-import dk.itu.moapd.scootersharing.alia.interfaces.ItemClickListener
+import dk.itu.moapd.scootersharing.alia.interfaces.RideItemClickListener
 import dk.itu.moapd.scootersharing.alia.models.Ride
-import dk.itu.moapd.scootersharing.alia.models.Scooter
 
-class ListRidesFragment : Fragment(), ItemClickListener {
+class ListRidesFragment : Fragment(), RideItemClickListener {
     private var _binding: FragmentListRidesBinding? = null
     private val binding
         get() = checkNotNull(_binding) {
@@ -75,7 +74,7 @@ class ListRidesFragment : Fragment(), ItemClickListener {
             .setMessage(R.string.deleteRideDialogMessage)
             .setCancelable(true)
             .setPositiveButton(R.string.yes) { _, _ ->
-                database.child("rides").child(Firebase.auth.currentUser!!.uid).child(position.toString()).removeValue()
+                adapter.getRef(position).removeValue()
             }
             .setNegativeButton(R.string.no) { dialog, _ ->
                 dialog.cancel()

@@ -6,11 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.google.android.material.snackbar.Snackbar
-import com.google.firebase.database.ServerValue
-import dk.itu.moapd.scootersharing.alia.Database
+import dk.itu.moapd.scootersharing.alia.DatabaseOperations
 import dk.itu.moapd.scootersharing.alia.R
 import dk.itu.moapd.scootersharing.alia.databinding.FragmentStartRideBinding
-import dk.itu.moapd.scootersharing.alia.models.Ride
+import dk.itu.moapd.scootersharing.alia.models.Scooter
 
 class StartRideFragment : Fragment() {
     private var _binding: FragmentStartRideBinding? = null
@@ -25,7 +24,7 @@ class StartRideFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        Database.initialize()
+        DatabaseOperations.initialize()
     }
 
     override fun onDestroyView() {
@@ -45,9 +44,13 @@ class StartRideFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.startRideButton.setOnClickListener {
-            val scooterRef = Database.getScooterRefByName("CPH03")
-            if (scooterRef.key != null)
-                Database.insertNewRide(Ride(scooterRef.key, ServerValue.TIMESTAMP, null, 55.61880355676757, 12.573134755857527, 55.69891195742094, 12.594372775696716, 0.0f))
+            val scooterRef = DatabaseOperations.getScooterRefByName("CPH03")
+
+            scooterRef.get().addOnSuccessListener { scooter ->
+                val scooterDetails = scooter.getValue(Scooter::class.java)
+                if (scooterDetails != null)
+                    DatabaseOperations.startNewRide(scooterRef.key!!, scooterDetails.latitude, scooterDetails.longitude)
+            }
 
             if (binding.editTextName.text!!.isNotEmpty() && binding.editTextLocation.text!!.isNotEmpty()) {
 

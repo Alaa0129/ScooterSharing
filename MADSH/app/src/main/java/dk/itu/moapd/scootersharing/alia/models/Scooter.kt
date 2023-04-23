@@ -25,7 +25,8 @@ data class Scooter (
     var imageUrl: String = "",
     var latitude: Double = 0.0,
     var longitude: Double = 0.0,
-    var available: Boolean = true) {
+    var available: Boolean = true,
+    var lastPhoto: String = "") {
 
     override fun toString():String {
         return "'$name' is placed at ${coordinatesToLocation()}"
