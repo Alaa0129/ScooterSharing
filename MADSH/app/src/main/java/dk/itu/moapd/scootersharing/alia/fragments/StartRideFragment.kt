@@ -1,15 +1,16 @@
 package dk.itu.moapd.scootersharing.alia.fragments
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.database.ServerValue
+import dk.itu.moapd.scootersharing.alia.Database
 import dk.itu.moapd.scootersharing.alia.R
-import dk.itu.moapd.scootersharing.alia.RidesDB
 import dk.itu.moapd.scootersharing.alia.databinding.FragmentStartRideBinding
+import dk.itu.moapd.scootersharing.alia.models.Ride
 
 class StartRideFragment : Fragment() {
     private var _binding: FragmentStartRideBinding? = null
@@ -19,13 +20,12 @@ class StartRideFragment : Fragment() {
         }
     companion object {
         private val TAG = StartRideFragment::class.qualifiedName
-        private lateinit var ridesDB: RidesDB
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        ridesDB = RidesDB.get(requireContext())
+        Database.initialize()
     }
 
     override fun onDestroyView() {
@@ -45,13 +45,11 @@ class StartRideFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.startRideButton.setOnClickListener {
+            val scooterRef = Database.getScooterRefByName("CPH03")
+            if (scooterRef.key != null)
+                Database.insertNewRide(Ride(scooterRef.key, ServerValue.TIMESTAMP, null, 55.61880355676757, 12.573134755857527, 55.69891195742094, 12.594372775696716, 0.0f))
+
             if (binding.editTextName.text!!.isNotEmpty() && binding.editTextLocation.text!!.isNotEmpty()) {
-
-                // Update the object attributes.
-                val nameScooter = binding.editTextName.text.toString().trim()
-                val nameLocation = binding.editTextLocation.text.toString().trim()
-
-                ridesDB.addScooter(nameScooter, nameLocation)
 
                 // Reset the text fields and update the UI.
                 binding.editTextName.text?.clear()
@@ -62,7 +60,7 @@ class StartRideFragment : Fragment() {
                     Snackbar
                         .make(
                             it,
-                            "Ride started using ${ridesDB.getCurrentScooter()}",
+                            "Ride started",
                             Snackbar.LENGTH_LONG)
                         .setAction("Action", null)
                 snackbar.setActionTextColor(requireContext().getColor(R.color.lightGrey))
@@ -72,13 +70,7 @@ class StartRideFragment : Fragment() {
                 snackbar.duration = 5000
 
                 snackbar.show()
-                showMessage()
             }
         }
-    }
-
-    private fun showMessage () {
-        // Print a message in the ‘Logcat‘ system.
-        Log.d(TAG, ridesDB.getCurrentScooterInfo())
     }
 }

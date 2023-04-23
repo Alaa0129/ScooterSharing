@@ -20,21 +20,24 @@
  */
 package dk.itu.moapd.scootersharing.alia.models
 
-import java.text.DateFormat
+data class Scooter (
+    val name: String = "",
+    var imageUrl: String = "",
+    var latitude: Double = 0.0,
+    var longitude: Double = 0.0,
+    var available: Boolean = true) {
 
-/**
- * The Scooter class which holds data about the Scooter.
- */
-data class Scooter (val name:String, var location:String, var timestamp:Long = System.currentTimeMillis()) {
-
-    /**
-     * @return the time stamp, scooter name and location as a string.
-     */
     override fun toString():String {
-        return "'$name' which is placed at $location on ${dateFormatted()}."
+        return "'$name' is placed at ${coordinatesToLocation()}"
+    }
+
+    private fun coordinatesToLocation(): String {
+        return ""
+        //return "($latitude, $longitude)"
     }
 
     private fun dateFormatted(): String {
-        return DateFormat.getDateTimeInstance().format(timestamp)
+        return ""
+        //return DateFormat.getDateTimeInstance().format(timestamp)
     }
 }

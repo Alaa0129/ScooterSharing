@@ -46,10 +46,6 @@ class UpdateRideFragment : Fragment() {
         binding.updateRideButton.setOnClickListener {
             if (binding.editTextLocation.text!!.isNotEmpty()) {
 
-                // Update the object attributes.
-                val nameLocation = binding.editTextLocation.text.toString().trim()
-
-                ridesDB.updateCurrentScooterLocation(nameLocation)
 
                 // Reset the text fields and update the UI.
                 binding.editTextLocation.text?.clear()
