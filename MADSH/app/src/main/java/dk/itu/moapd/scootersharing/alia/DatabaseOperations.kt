@@ -5,14 +5,18 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.StorageReference
+import com.google.firebase.storage.ktx.storage
 
 class DatabaseOperations {
     companion object {
         private lateinit var database: DatabaseReference
+        private lateinit var storage: StorageReference
         private var user: FirebaseUser? = null
 
         fun initialize() {
             database = Firebase.database("https://scootersharing-jokf-alia-default-rtdb.europe-west1.firebasedatabase.app").reference
+            storage = Firebase.storage("").reference
             user = Firebase.auth.currentUser
         }
 
