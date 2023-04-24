@@ -7,6 +7,9 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 class DatabaseOperations {
     companion object {
@@ -81,6 +84,19 @@ class DatabaseOperations {
                 endValuesMap["endLongitude"] = userLongitude
                 endValuesMap["price"] = price
                 currentRideRef.updateChildren(endValuesMap)
+            }
+        }
+
+        fun uploadNewScooterPhoto(scooterName: String, photo: ByteArray) {
+            if (user == null)
+                throw Exception("User is not logged in")
+            else
+            {
+                val today = Calendar.getInstance().time
+                val formatter = SimpleDateFormat("yyyy-MM-dd-HH-mm-ss", Locale.US)
+                val date = formatter.format(today)
+                val newPhotoRef = storage.child("scooter_images").child(scooterName).child("${date}.jpg")
+                newPhotoRef.putBytes(photo)
             }
         }
     }
