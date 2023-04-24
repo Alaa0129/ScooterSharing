@@ -16,7 +16,7 @@ class DatabaseOperations {
 
         fun initialize() {
             database = Firebase.database("https://scootersharing-jokf-alia-default-rtdb.europe-west1.firebasedatabase.app").reference
-            storage = Firebase.storage("").reference
+            storage = Firebase.storage("gs://scootersharing-jokf-alia.appspot.com/").reference
             user = Firebase.auth.currentUser
         }
 
