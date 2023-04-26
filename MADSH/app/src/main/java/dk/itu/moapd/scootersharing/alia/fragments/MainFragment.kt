@@ -1,12 +1,18 @@
 package dk.itu.moapd.scootersharing.alia.fragments
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
+import androidx.core.content.ContextCompat.checkSelfPermission
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -22,11 +28,26 @@ class MainFragment : Fragment() {
         }
     private lateinit var auth: FirebaseAuth
 
+    companion object {
+        private const val ALL_PERMISSIONS_RESULT = 1011
+    }
+
+    private lateinit var googleSignInClient: GoogleSignInClient
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         // Initialize Firebase Auth.
         auth = Firebase.auth
+
+        // Initialize Google Sign-In.
+        val options = GoogleSignInOptions
+            .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestEmail()
+            .build()
+        googleSignInClient = GoogleSignIn.getClient(requireActivity(), options)
+
+        requestUserPermissions()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -69,5 +90,49 @@ class MainFragment : Fragment() {
             auth.signOut()
             startLoginActivity()
         }
+        binding.buttonMaps.setOnClickListener {
+            findNavController().navigate(R.id.mapsFragment)
+        }
+    }
+
+    /**
+     * Create a set of dialogs to show to the users and ask them for permissions to get the device's
+     * resources.
+     */
+    private fun requestUserPermissions() {
+
+        // An array with location-aware permissions.
+        val permissions: ArrayList<String> = ArrayList()
+        permissions.add(Manifest.permission.ACCESS_FINE_LOCATION)
+        permissions.add(Manifest.permission.ACCESS_COARSE_LOCATION)
+
+        // Check which permissions is needed to ask to the user.
+        val permissionsToRequest = permissionsToRequest(permissions)
+
+        // Show the permissions dialogs to the user.
+        if (permissionsToRequest.size > 0)
+            activity?.requestPermissions(
+                permissionsToRequest.toTypedArray(),
+                ALL_PERMISSIONS_RESULT
+            )
+    }
+
+    /**
+     * Create an array with the permissions to show to the user.
+     *
+     * @param permissions An array with the permissions needed by this applications.
+     *
+     * @return An array with the permissions needed to ask to the user.
+     */
+    private fun permissionsToRequest(permissions: ArrayList<String>): ArrayList<String> {
+        val result: ArrayList<String> = ArrayList()
+        for (permission in permissions)
+            if (checkSelfPermission(
+                    requireContext(),
+                    permission
+                ) != PackageManager.PERMISSION_GRANTED
+            )
+                result.add(permission)
+        return result
     }
 }

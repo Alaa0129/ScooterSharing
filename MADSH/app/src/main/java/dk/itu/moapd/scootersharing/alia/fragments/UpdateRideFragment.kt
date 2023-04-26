@@ -7,7 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.google.android.material.snackbar.Snackbar
-import dk.itu.moapd.scootersharing.alia.DatabaseOperations
+import dk.itu.moapd.scootersharing.alia.utils.DatabaseOperations
 import dk.itu.moapd.scootersharing.alia.R
 import dk.itu.moapd.scootersharing.alia.RidesDB
 import dk.itu.moapd.scootersharing.alia.databinding.FragmentUpdateRideBinding
@@ -47,7 +47,7 @@ class UpdateRideFragment : Fragment() {
 
         binding.updateRideButton.setOnClickListener {
 
-            DatabaseOperations.endCurrentRide()
+            DatabaseOperations.endCurrentRide(requireContext())
 
             if (binding.editTextLocation.text!!.isNotEmpty()) {
 

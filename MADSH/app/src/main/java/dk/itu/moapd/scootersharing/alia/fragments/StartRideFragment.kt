@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.google.android.material.snackbar.Snackbar
-import dk.itu.moapd.scootersharing.alia.DatabaseOperations
+import dk.itu.moapd.scootersharing.alia.utils.DatabaseOperations
 import dk.itu.moapd.scootersharing.alia.R
 import dk.itu.moapd.scootersharing.alia.databinding.FragmentStartRideBinding
 import dk.itu.moapd.scootersharing.alia.models.Scooter

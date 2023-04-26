@@ -61,6 +61,20 @@
         android:paddingVertical="15dp"
         app:icon="@drawable/baseline_format_list_bulleted_24" />
 
+    <!-- Button to maps view  -->
+    <Button
+        android:id="@+id/button_maps"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/scooter_map"
+        app:backgroundTint="@color/purple_350"
+        app:cornerRadius="100dp"
+        android:textAllCaps="false"
+        android:layout_gravity="center"
+        android:paddingHorizontal="25dp"
+        android:paddingVertical="15dp"
+        app:icon="@drawable/baseline_map_24" />
+
     <!-- Button to sign out  -->
     <Button
         android:id="@+id/button_sign_out"
