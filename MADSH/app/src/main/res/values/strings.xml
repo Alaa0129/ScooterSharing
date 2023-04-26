@@ -26,4 +26,5 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="scooter_map">Scooter Map</string>
     <string name="logo">Logo</string>
+    <string name="scan_to_start_a_ride">Scan to start a ride</string>
 </resources>

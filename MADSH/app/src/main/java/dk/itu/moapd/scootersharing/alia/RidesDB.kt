@@ -9,21 +9,21 @@ class RidesDB private constructor(context: Context) {
     companion object : RidesDBHolder <RidesDB, Context>(:: RidesDB )
 
     init {
-        rides.add(Scooter("CPH001", "ITU"))
-        rides.add(Scooter("CPH002", "Fields"))
-        rides.add(Scooter("CPH003", "DR Byen"))
-        rides.add(Scooter("CPH004", "Nørrebro St."))
-        rides.add(Scooter("CPH005", "Lufthavn"))
-        rides.add(Scooter("CPH006", "Roskilde"))
-        rides.add(Scooter("CPH007", "Fisketorvet"))
-        rides.add(Scooter("CPH008", "Ballerup"))
-        rides.add(Scooter("CPH009", "Vestamager"))
-        rides.add(Scooter("CPH0010", "Islands Brygge"))
-        rides.add(Scooter("CPH0011", "Nørreport"))
-        rides.add(Scooter("CPH0012", "Vesterbro"))
-        rides.add(Scooter("CPH0013", "Hovedbanegården"))
-        rides.add(Scooter("CPH0014", "Istedgade"))
-        rides.add(Scooter("CPH0015", "Rødovre Centrum"))
+        rides.add(Scooter("CPH001", "ITU", ""))
+        rides.add(Scooter("CPH002", "Fields", ""))
+        rides.add(Scooter("CPH003", "DR Byen", ""))
+        rides.add(Scooter("CPH004", "Nørrebro St.", ""))
+        rides.add(Scooter("CPH005", "Lufthavn", ""))
+        rides.add(Scooter("CPH006", "Roskilde", ""))
+        rides.add(Scooter("CPH007", "Fisketorvet", ""))
+        rides.add(Scooter("CPH008", "Ballerup", ""))
+        rides.add(Scooter("CPH009", "Vestamager", ""))
+        rides.add(Scooter("CPH0010", "Islands Brygge", ""))
+        rides.add(Scooter("CPH0011", "Nørreport", ""))
+        rides.add(Scooter("CPH0012", "Vesterbro", ""))
+        rides.add(Scooter("CPH0013", "Hovedbanegården", ""))
+        rides.add(Scooter("CPH0014", "Istedgade", ""))
+        rides.add(Scooter("CPH0015", "Rødovre Centrum", ""))
     }
 
     /**
@@ -36,8 +36,8 @@ class RidesDB private constructor(context: Context) {
     /**
      * Add a scooter to the singleton.
      */
-    fun addScooter(name: String, location: String) {
-        rides.add(Scooter(name, location))
+    fun addScooter(name: String, location: String, last_photo: String) {
+        rides.add(Scooter(name, location, last_photo))
     }
 
     /**
@@ -71,7 +71,7 @@ class RidesDB private constructor(context: Context) {
      * @return Information about the most recently created scooter.
      */
     fun getCurrentScooterInfo() : String {
-        return "Name: ${rides.last().name}, location: ${rides.last().location}, time: ${DateFormat.getDateTimeInstance().format(rides.last().timestamp)}"
+        return "Name: ${rides.last().name}, location: ${rides.last().location}, image url: ${rides.last().last_photo}, time: ${DateFormat.getDateTimeInstance().format(rides.last().timestamp)}"
     }
 }
 

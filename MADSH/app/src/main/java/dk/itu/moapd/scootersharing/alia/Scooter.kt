@@ -25,7 +25,7 @@ import java.text.DateFormat
 /**
  * The Scooter class which holds data about the Scooter.
  */
-data class Scooter (val name:String, var location:String, var timestamp:Long = System.currentTimeMillis()) {
+data class Scooter (val name:String, var location:String, var last_photo:String, var timestamp:Long = System.currentTimeMillis()) {
 
     /**
      * @return the time stamp, scooter name and location as a string.

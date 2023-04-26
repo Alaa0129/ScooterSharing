@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat.checkSelfPermission
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -104,6 +103,7 @@ class MainFragment : Fragment() {
         val permissions: ArrayList<String> = ArrayList()
         permissions.add(Manifest.permission.ACCESS_FINE_LOCATION)
         permissions.add(Manifest.permission.ACCESS_COARSE_LOCATION)
+        permissions.add(Manifest.permission.CAMERA)
 
         // Check which permissions is needed to ask to the user.
         val permissionsToRequest = permissionsToRequest(permissions)
