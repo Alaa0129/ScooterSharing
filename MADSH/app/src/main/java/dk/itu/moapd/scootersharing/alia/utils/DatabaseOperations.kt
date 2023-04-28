@@ -11,6 +11,7 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
 import dk.itu.moapd.scootersharing.alia.models.Ride
+import dk.itu.moapd.scootersharing.alia.models.Scooter
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -29,6 +30,29 @@ class DatabaseOperations {
 
         fun getScooterRefByName(name: String): DatabaseReference {
             return database.child("scooters").child(name)
+        }
+
+        fun getAllScooters(callback: (List<Scooter>?) -> Unit) {
+            if (user == null) {
+                throw Exception("User is not logged in")
+            } else {
+                database.child("scooters").addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val scooters = mutableListOf<Scooter>()
+                        for (child in snapshot.children) {
+                            val scooter = child.getValue(Scooter::class.java)
+                            if (scooter != null) {
+                                scooters.add(scooter)
+                            }
+                        }
+                        callback(scooters)
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        throw error.toException()
+                    }
+                })
+            }
         }
 
         fun getCurrentRideRef(callback: (DatabaseReference?) -> Unit) {
