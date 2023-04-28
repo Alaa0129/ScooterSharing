@@ -10,6 +10,7 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
+import dk.itu.moapd.scootersharing.alia.models.Ride
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -38,7 +39,7 @@ class DatabaseOperations {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         var ref: DatabaseReference? = null
                         for (child in snapshot.children) {
-                            var endTime = child.child("endTime").getValue(Long::class.java)
+                            val endTime = child.child("endTime").getValue(Long::class.java)
                             if (endTime == null) {
                                 ref = child.ref
                                 break
@@ -53,7 +54,6 @@ class DatabaseOperations {
                 })
             }
         }
-
 
         fun startNewRide(scooterName: String, startLatitude: Double, startLongitude: Double) {
             if (user == null)
@@ -82,22 +82,29 @@ class DatabaseOperations {
                     if (ref != null) {
                         FusedLocationService.fusedLocationProviderClient.lastLocation.addOnSuccessListener { location: Location? ->
                             if (location != null) {
-                                // Update latitude and longitude to user's current location
-                                val userLatitude = location.latitude
-                                val userLongitude = location.longitude
-                                val endTime = ServerValue.TIMESTAMP
-                                val price = 69.0f // TODO: Update this to be based on time.
-
                                 val endValuesMap = HashMap<String, Any>()
+
+                                val endTime = ServerValue.TIMESTAMP
                                 endValuesMap["endTime"] = endTime
-                                endValuesMap["endLatitude"] = userLatitude
-                                endValuesMap["endLongitude"] = userLongitude
-                                endValuesMap["price"] = price
                                 ref.updateChildren(endValuesMap)
+
+                                ref.get().addOnSuccessListener { ride ->
+                                    val rideDetails = ride.getValue(Ride::class.java)
+
+                                    val userLatitude = location.latitude
+                                    val userLongitude = location.longitude
+                                    val rideDurationInMs = rideDetails!!.endTime!! - rideDetails.startTime!!
+                                    val price = (rideDurationInMs / 1000 / 60 * 1.75).toFloat()
+
+                                    endValuesMap["endLatitude"] = userLatitude
+                                    endValuesMap["endLongitude"] = userLongitude
+                                    endValuesMap["price"] = price
+                                    ref.updateChildren(endValuesMap)
+                                }
                             }
                         }
                     } else {
-                        Log.d("Ride","No current ride found")
+                        Log.d("DatabaseOperations","No ongoing ride")
                     }
                 }
             }
