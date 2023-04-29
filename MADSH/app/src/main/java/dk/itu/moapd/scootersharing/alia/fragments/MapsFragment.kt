@@ -1,23 +1,36 @@
 package dk.itu.moapd.scootersharing.alia.fragments
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import dk.itu.moapd.scootersharing.alia.R
+import dk.itu.moapd.scootersharing.alia.models.Scooter
+import dk.itu.moapd.scootersharing.alia.utils.DatabaseOperations
 import dk.itu.moapd.scootersharing.alia.utils.FusedLocationService
 
-class MapsFragment : Fragment(), OnMapReadyCallback {
+class MapsFragment : Fragment(), OnMapReadyCallback, OnMarkerClickListener {
+
+    companion object {
+        private const val TAG = "MapsFragment"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        DatabaseOperations.initialize()
 
         FusedLocationService.initializeFusedLocation(requireContext())
 
@@ -88,6 +101,23 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
         // Move the Google Maps UI buttons under the OS top bar.
         googleMap.setPadding(0, 100, 0, 0)
 
+        // Set a listener for marker click.
+        googleMap.setOnMarkerClickListener(this)
+
+        // Fetch list of scooters from the database.
+        DatabaseOperations.getAllScooters {
+            // Add a marker for each scooter
+            it!!.forEach { scooter ->
+                val location = LatLng(scooter.latitude, scooter.longitude)
+                val marker = googleMap.addMarker(
+                    MarkerOptions()
+                        .position(location)
+                        .title(scooter.name)
+                )
+                marker?.tag = scooter
+            }
+        }
+
         // Add a marker in ITU and move the camera
         val itu = LatLng(55.6596, 12.5910)
         googleMap.addMarker(
@@ -96,5 +126,23 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
                 .title("Marker in IT University of Copenhagen")
         )
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(itu, 18f))
+    }
+
+    override fun onMarkerClick(marker: Marker): Boolean {
+        val scooter = marker.tag as? Scooter ?: return false
+
+        // Inflate the marker_info.xml layout
+        val infoView = LayoutInflater.from(requireContext())
+            .inflate(R.layout.marker_start_ride, null)
+
+        // Set the text and image for the popup/overlay
+        infoView.findViewById<TextView>(R.id.scooter_name).text = scooter.name
+
+        // Create a new AlertDialog and set the view to the inflated infoView
+        AlertDialog.Builder(requireContext())
+            .setView(infoView)
+            .show()
+
+        return true
     }
 }
