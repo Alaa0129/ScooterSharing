@@ -42,6 +42,7 @@ class DatabaseOperations {
                         for (child in snapshot.children) {
                             val scooter = child.getValue(Scooter::class.java)
                             if (scooter != null) {
+                                scooter.name = child.key!!
                                 scooters.add(scooter)
                             }
                         }

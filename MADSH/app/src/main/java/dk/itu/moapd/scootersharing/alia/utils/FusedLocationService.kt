@@ -13,6 +13,7 @@ import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import com.google.android.gms.location.*
+import com.google.android.gms.maps.model.LatLng
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -57,11 +58,11 @@ class FusedLocationService {
             }
         }
 
-        fun getCurrentLocation(context: Context) {
+        fun getCurrentLocation(context: Context, callback: (LatLng) -> Unit) {
             if (checkPermission(context))
                 return
             fusedLocationProviderClient.lastLocation.addOnSuccessListener { location: Location? ->
-                Log.d("FusedLocationService", "Latitude: ${location?.latitude}, Longitude: ${location?.longitude}, Date: ${location?.time?.toDateString()}")
+                callback(LatLng(location!!.latitude, location.longitude))
             }
         }
 
