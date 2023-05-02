@@ -24,4 +24,7 @@
     <string name="login_failed">"Login failed"</string>
     <string name="log_out">Log out</string>
     <string name="scooter_map">Scooter Map</string>
+    <string name="placeholder_image_for_a_scooter">Placeholder image for a scooter</string>
+    <string name="scooter_list">Available scooters</string>
+    <string name="rent">Rent</string>
 </resources>

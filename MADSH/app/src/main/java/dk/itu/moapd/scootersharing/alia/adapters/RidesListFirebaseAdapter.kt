@@ -21,9 +21,8 @@ class RidesListFirebaseAdapter(private val itemClickListener: RideItemClickListe
     override fun onBindViewHolder(holder: RidesHolder, position: Int, ride: Ride) {
         holder.apply {
             bind(ride)
-            itemView.setOnLongClickListener {
+            itemView.setOnClickListener {
                 itemClickListener.onItemClickListener(ride, position)
-                true
             }
         }
     }
