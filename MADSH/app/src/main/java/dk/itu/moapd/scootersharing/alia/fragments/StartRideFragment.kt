@@ -24,7 +24,7 @@ class StartRideFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        DatabaseOperations.initialize()
+        DatabaseOperations.initialize(requireContext())
     }
 
     override fun onDestroyView() {

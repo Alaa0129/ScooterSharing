@@ -3,6 +3,8 @@ package dk.itu.moapd.scootersharing.alia.utils
 import android.content.Context
 import android.location.Location
 import android.util.Log
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
@@ -12,6 +14,7 @@ import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
 import dk.itu.moapd.scootersharing.alia.models.Ride
 import dk.itu.moapd.scootersharing.alia.models.Scooter
+import dk.itu.moapd.scootersharing.alia.services.LocationService
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -19,17 +22,35 @@ class DatabaseOperations {
     companion object {
         private lateinit var database: DatabaseReference
         private lateinit var storage: StorageReference
+        private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
+
         private var user: FirebaseUser? = null
 
-
-        fun initialize() {
+        fun initialize(context: Context) {
             database = Firebase.database("https://scootersharing-jokf-alia-default-rtdb.europe-west1.firebasedatabase.app").reference
             storage = Firebase.storage("gs://scootersharing-jokf-alia.appspot.com/").reference
+            fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
             user = Firebase.auth.currentUser
         }
 
         fun getScooterRefByName(name: String): DatabaseReference {
             return database.child("scooters").child(name)
+        }
+
+        fun getScooterDetailsByName(name: String, callback: (Scooter?) -> Unit) {
+            database.child("scooters").child(name).addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val scooter = snapshot.getValue(Scooter::class.java)
+                    if (scooter != null) {
+                        scooter.name = snapshot.key!!
+                    }
+                    callback(scooter)
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    throw error.toException()
+                }
+            })
         }
 
         fun getAllScooters(callback: (List<Scooter>?) -> Unit) {
@@ -102,14 +123,12 @@ class DatabaseOperations {
                 throw Exception("User is not logged in")
             else
             {
-                FusedLocationService.initializeFusedLocation(context)
-
-                if (FusedLocationService.checkPermission(context))
+                if (LocationService.checkPermission(context))
                     return
 
                 getCurrentRideRef { ref ->
                     if (ref != null) {
-                        FusedLocationService.fusedLocationProviderClient.lastLocation.addOnSuccessListener { location: Location? ->
+                        fusedLocationProviderClient.lastLocation.addOnSuccessListener { location: Location? ->
                             if (location != null) {
                                 val endValuesMap = HashMap<String, Any>()
 
@@ -130,9 +149,11 @@ class DatabaseOperations {
                                     endValuesMap["price"] = price
                                     ref.updateChildren(endValuesMap)
 
-                                    // Make scooter available.
+                                    // Update scooter values.
                                     val scooterRef = getScooterRefByName(rideDetails.scooter!!)
                                     scooterRef.child("available").setValue(true)
+                                    scooterRef.child("latitude").setValue(userLatitude)
+                                    scooterRef.child("longitude").setValue(userLongitude)
                                 }
                             }
                         }

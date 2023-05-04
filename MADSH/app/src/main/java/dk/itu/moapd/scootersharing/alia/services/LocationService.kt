@@ -1,6 +1,8 @@
 package dk.itu.moapd.scootersharing.alia.services
 
 import android.Manifest
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.app.Service
 import android.content.Context
 import android.content.Intent
@@ -34,10 +36,24 @@ class LocationService : Service() {
     /**
      * The primary instance for receiving location updates.
      */
-    lateinit var fusedLocationProviderClient: FusedLocationProviderClient
+    private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
 
     companion object {
         private const val TAG = "LocationService"
+
+        /**
+         * This method checks if the user allows the application uses all location-aware resources to
+         * monitor the user's location.
+         *
+         * @return A boolean value with the user permission agreement.
+         */
+        fun checkPermission(context: Context) =
+            ActivityCompat.checkSelfPermission(
+                context, Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED &&
+                    ActivityCompat.checkSelfPermission(
+                        context, Manifest.permission.ACCESS_COARSE_LOCATION
+                    ) != PackageManager.PERMISSION_GRANTED
     }
 
     override fun onCreate() {
@@ -45,14 +61,16 @@ class LocationService : Service() {
 
         fusedLocationProviderClient = getFusedLocationProviderClient(this)
         startLocationAware()
-    }
 
-    override fun onBind(intent: Intent): IBinder? {
-        return null
-    }
-
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        subscribeToLocationUpdates(this)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(
+                "LocationService",
+                "Foreground Service Channel",
+                NotificationManager.IMPORTANCE_DEFAULT
+            )
+            val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+        }
 
         val notification = NotificationCompat.Builder(this, "LocationService")
             .setContentTitle("Location Service")
@@ -61,6 +79,14 @@ class LocationService : Service() {
             .build()
 
         startForeground(1, notification)
+    }
+
+    override fun onBind(intent: Intent): IBinder? {
+        return null
+    }
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        subscribeToLocationUpdates(this)
 
         return super.onStartCommand(intent, flags, startId)
     }
@@ -117,20 +143,6 @@ class LocationService : Service() {
     private fun unsubscribeToLocationUpdates() {
         fusedLocationProviderClient.removeLocationUpdates(locationCallback)
     }
-
-    /**
-     * This method checks if the user allows the application uses all location-aware resources to
-     * monitor the user's location.
-     *
-     * @return A boolean value with the user permission agreement.
-     */
-    private fun checkPermission(context: Context) =
-        ActivityCompat.checkSelfPermission(
-            context, Manifest.permission.ACCESS_FINE_LOCATION
-        ) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(
-                    context, Manifest.permission.ACCESS_COARSE_LOCATION
-                ) != PackageManager.PERMISSION_GRANTED
 
     /**
      * Return the timestamp as a `String`.

@@ -18,15 +18,17 @@ class UpdateRideFragment : Fragment() {
         get() = checkNotNull(_binding) {
             "Cannot access binding because it is null. Is the view visible?"
         }
+
     companion object {
         private val TAG = FragmentUpdateRideBinding::class.qualifiedName
         private lateinit var ridesDB: RidesDB
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         ridesDB = RidesDB.get(requireContext())
-        DatabaseOperations.initialize()
+        DatabaseOperations.initialize(requireContext())
     }
 
     override fun onDestroyView() {
