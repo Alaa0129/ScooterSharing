@@ -90,6 +90,10 @@ class DatabaseOperations {
                 newNodeRef.child("startTime").setValue(ServerValue.TIMESTAMP)
                 newNodeRef.child("startLatitude").setValue(startLatitude)
                 newNodeRef.child("startLongitude").setValue(startLongitude)
+
+                // Make scooter unavailable.
+                val scooterRef = getScooterRefByName(scooterName)
+                scooterRef.child("available").setValue(false)
             }
         }
 
@@ -118,13 +122,17 @@ class DatabaseOperations {
 
                                     val userLatitude = location.latitude
                                     val userLongitude = location.longitude
-                                    val rideDurationInMs = rideDetails!!.endTime!! - rideDetails.startTime!!
-                                    val price = (rideDurationInMs / 1000 / 60 * 1.75).toFloat()
+                                    val rideDurationInMs = (rideDetails!!.endTime!! - rideDetails.startTime!!).toDouble()
+                                    val price = (rideDurationInMs / 1000 / 60 * 1.75)
 
                                     endValuesMap["endLatitude"] = userLatitude
                                     endValuesMap["endLongitude"] = userLongitude
                                     endValuesMap["price"] = price
                                     ref.updateChildren(endValuesMap)
+
+                                    // Make scooter available.
+                                    val scooterRef = getScooterRefByName(rideDetails.scooter!!)
+                                    scooterRef.child("available").setValue(true)
                                 }
                             }
                         }

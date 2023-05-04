@@ -156,7 +156,6 @@ class FusedLocationService {
          * Unsubscribes this application of getting the location changes from  the `locationCallback()`.
          */
         fun unsubscribeToLocationUpdates() {
-            // Unsubscribe to location changes.
             fusedLocationProviderClient
                 .removeLocationUpdates(locationCallback)
         }

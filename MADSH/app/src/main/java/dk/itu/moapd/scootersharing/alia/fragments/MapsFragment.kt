@@ -1,5 +1,6 @@
 package dk.itu.moapd.scootersharing.alia.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -18,6 +19,7 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dk.itu.moapd.scootersharing.alia.R
 import dk.itu.moapd.scootersharing.alia.models.Scooter
+import dk.itu.moapd.scootersharing.alia.services.LocationService
 import dk.itu.moapd.scootersharing.alia.utils.DatabaseOperations
 import dk.itu.moapd.scootersharing.alia.utils.FusedLocationService
 
@@ -35,11 +37,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback, OnMarkerClickListener {
         super.onCreate(savedInstanceState)
 
         DatabaseOperations.initialize()
-
-        FusedLocationService.initializeFusedLocation(requireContext())
-
-        // Start the location-aware method.
-        FusedLocationService.startLocationAware(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -60,16 +57,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback, OnMarkerClickListener {
         // Obtain the `SupportMapFragment` and get notified when the map is ready to be used.
         val mapFragment = childFragmentManager.findFragmentById(R.id.google_maps) as SupportMapFragment
         mapFragment.getMapAsync(this)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        FusedLocationService.subscribeToLocationUpdates(requireContext())
-    }
-
-    override fun onPause() {
-        super.onPause()
-        FusedLocationService.unsubscribeToLocationUpdates()
     }
 
     /**
@@ -117,19 +104,21 @@ class MapsFragment : Fragment(), OnMapReadyCallback, OnMarkerClickListener {
         DatabaseOperations.getAllScooters {
             // Add a marker for each scooter.
             it!!.forEach { scooter ->
-                val location = LatLng(scooter.latitude, scooter.longitude)
-                val marker = googleMap.addMarker(
-                    MarkerOptions()
-                        .position(location)
-                        .title(scooter.name)
-                )
-                marker?.tag = scooter
+                if (scooter.available) {
+                    val location = LatLng(scooter.latitude, scooter.longitude)
+                    val marker = googleMap.addMarker(
+                        MarkerOptions()
+                            .position(location)
+                            .title(scooter.name)
+                    )
+                    marker?.tag = scooter
+                }
             }
         }
 
-        /*// Get device's location and move the camera.
-        FusedLocationService.fusedLocationProviderClient.lastLocation.addOnSuccessListener { location ->
-            val currentLocation = LatLng(location.latitude, location.longitude)
+        // Get device's location and move the camera.
+        /*FusedLocationService.fusedLocationProviderClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null).addOnSuccessListener {
+            val currentLocation = LatLng(it.latitude, it.longitude)
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 18f))
         }*/
     }
@@ -144,15 +133,16 @@ class MapsFragment : Fragment(), OnMapReadyCallback, OnMarkerClickListener {
             DatabaseOperations.startNewRide(scooter.name, scooter.latitude, scooter.longitude)
             marker.remove()
 
-            startRideOverlay.visibility = View.GONE
+            Intent(requireContext(), LocationService::class.java).also { intent ->
+                requireContext().startService(intent)
+            }
+
             (view as ViewGroup).removeView(startRideOverlay)
 
-            // Inflate the popup_end_ride.xml layout.
             openEndRidePopup(scooter)
         }
 
         (view as ViewGroup).addView(startRideOverlay)
-        startRideOverlay.visibility = View.VISIBLE
 
         return true
     }
@@ -169,13 +159,15 @@ class MapsFragment : Fragment(), OnMapReadyCallback, OnMarkerClickListener {
                         .position(LatLng(it.latitude, it.longitude))
                         .title(scooter.name))
                 marker?.tag = scooter
-                endRideOverlay.visibility = View.GONE
+
+                Intent(requireContext(), LocationService::class.java).also { intent ->
+                    requireContext().stopService(intent)
+                }
+
                 (view as ViewGroup).removeView(endRideOverlay)
             }
         }
-
         (view as ViewGroup).addView(endRideOverlay)
-        endRideOverlay.visibility = View.VISIBLE
     }
 
     private fun showEndRideConfirmationDialog() {
@@ -185,7 +177,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, OnMarkerClickListener {
             .setCancelable(true)
             .setPositiveButton(R.string.yes) { _, _ ->
                 DatabaseOperations.endCurrentRide(requireContext())
-                endRideOverlay.visibility = View.GONE
+
                 (view as ViewGroup).removeView(endRideOverlay)
             }
             .setNegativeButton(R.string.no) { dialog, _ ->
