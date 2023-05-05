@@ -1,17 +1,15 @@
 package dk.itu.moapd.scootersharing.alia.fragments
 
 import android.Manifest
-import android.app.PendingIntent
-import android.content.Context
 import android.app.Activity.RESULT_OK
+import android.app.PendingIntent
 import android.content.ActivityNotFoundException
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.graphics.Color
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.provider.MediaStore
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,11 +17,8 @@ import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import com.google.android.gms.location.*
 import com.bumptech.glide.Glide
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
-import com.google.android.gms.location.Priority
+import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener
@@ -38,9 +33,9 @@ import dk.itu.moapd.scootersharing.alia.R
 import dk.itu.moapd.scootersharing.alia.models.Scooter
 import dk.itu.moapd.scootersharing.alia.services.LocationService
 import dk.itu.moapd.scootersharing.alia.utils.DatabaseOperations
-import java.io.ByteArrayOutputStream
 import dk.itu.moapd.scootersharing.alia.utils.GeofenceBroadcastReceiver
 import dk.itu.moapd.scootersharing.alia.utils.GeofenceHelper
+import java.io.ByteArrayOutputStream
 
 class MapsFragment : Fragment(), OnMapReadyCallback, OnMarkerClickListener {
 
@@ -180,7 +175,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback, OnMarkerClickListener {
         geofenceList.add(geofence!!)
 
         val geofencingRequest = geofenceHelper.getGeofencingRequest(geofence)
-
 
         // create geofences
         geofenceList.add(
