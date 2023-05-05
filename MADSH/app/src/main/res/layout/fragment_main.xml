@@ -20,7 +20,7 @@
     <!-- Button to start a ride  -->
     <Button
         android:id="@+id/start_ride_page_button"
-        android:layout_width="wrap_content"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:text="@string/start_ride"
         app:backgroundTint="@color/purple_350"
@@ -35,7 +35,7 @@
     <!-- Button to update a ride  -->
     <Button
         android:id="@+id/update_ride_page_button"
-        android:layout_width="wrap_content"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:text="@string/update_ride"
         app:backgroundTint="@color/purple_350"
@@ -50,7 +50,7 @@
     <!-- Button to show list of rides  -->
     <Button
         android:id="@+id/list_rides_button"
-        android:layout_width="wrap_content"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:text="@string/list_rides"
         app:backgroundTint="@color/purple_350"
@@ -59,12 +59,13 @@
         android:layout_gravity="center"
         android:paddingHorizontal="25dp"
         android:paddingVertical="15dp"
-        app:icon="@drawable/baseline_format_list_bulleted_24" />
+        app:icon="@drawable/baseline_format_list_bulleted_24"
+        android:layout_marginBottom="10dp"/>
 
     <!-- Button to maps view  -->
     <Button
         android:id="@+id/button_maps"
-        android:layout_width="wrap_content"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:text="@string/scooter_map"
         app:backgroundTint="@color/purple_350"
@@ -73,12 +74,28 @@
         android:layout_gravity="center"
         android:paddingHorizontal="25dp"
         android:paddingVertical="15dp"
-        app:icon="@drawable/baseline_map_24" />
+        app:icon="@drawable/baseline_map_24"
+        android:layout_marginBottom="10dp"/>
+
+    <!-- Button to show list of available scooters -->
+    <Button
+        android:id="@+id/list_scooters_button"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:text="@string/scooter_list"
+        app:backgroundTint="@color/purple_350"
+        app:cornerRadius="100dp"
+        android:textAllCaps="false"
+        android:layout_gravity="center"
+        android:paddingHorizontal="25dp"
+        android:paddingVertical="15dp"
+        app:icon="@drawable/baseline_electric_scooter_24"
+        android:layout_marginBottom="10dp"/>
 
     <!-- Button to sign out  -->
     <Button
         android:id="@+id/button_sign_out"
-        android:layout_width="wrap_content"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:text="@string/log_out"
         app:backgroundTint="@color/purple_350"

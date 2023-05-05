@@ -10,4 +10,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="lightGrey">#D3D3D3</color>
     <color name="snackBarColor">#cc000000</color>
+    <color name="lightGray">#E3E3E3</color>
 </resources>

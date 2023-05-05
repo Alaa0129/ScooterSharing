@@ -10,8 +10,7 @@ import dk.itu.moapd.scootersharing.alia.interfaces.ScooterItemClickListener
 import dk.itu.moapd.scootersharing.alia.models.Scooter
 import dk.itu.moapd.scootersharing.alia.utils.ScootersHolder
 
-class ScooterListFirebaseAdapter(private val itemClickListener: ScooterItemClickListener,
-                                 options: FirebaseRecyclerOptions<Scooter>) : FirebaseRecyclerAdapter<Scooter, ScootersHolder>(options) {
+class ScooterListFirebaseAdapter(options: FirebaseRecyclerOptions<Scooter>) : FirebaseRecyclerAdapter<Scooter, ScootersHolder>(options) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ScootersHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -22,10 +21,6 @@ class ScooterListFirebaseAdapter(private val itemClickListener: ScooterItemClick
     override fun onBindViewHolder(holder: ScootersHolder, position: Int, scooter: Scooter) {
         holder.apply {
             bind(scooter)
-            itemView.setOnLongClickListener {
-                itemClickListener.onItemClickListener(scooter, position)
-                true
-            }
         }
     }
 }

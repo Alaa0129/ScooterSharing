@@ -27,4 +27,7 @@
     <string name="scooter_map">Scooter Map</string>
     <string name="endRideDialogTitle">End ride</string>
     <string name="endRideDialogMessage">Are you sure you want to end the ride now?</string>
+    <string name="placeholder_image_for_a_scooter">Placeholder image for a scooter</string>
+    <string name="scooter_list">Available scooters</string>
+    <string name="rent">Rent</string>
 </resources>
