@@ -31,6 +31,7 @@ import dk.itu.moapd.scootersharing.alia.R
 import dk.itu.moapd.scootersharing.alia.models.Scooter
 import dk.itu.moapd.scootersharing.alia.services.LocationService
 import dk.itu.moapd.scootersharing.alia.utils.DatabaseOperations
+import dk.itu.moapd.scootersharing.alia.utils.GeofenceBroadcastReceiver
 import dk.itu.moapd.scootersharing.alia.utils.GeofenceHelper
 
 class MapsFragment : Fragment(), OnMapReadyCallback, OnMarkerClickListener {
@@ -39,6 +40,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, OnMarkerClickListener {
     private lateinit var endRideOverlay: FrameLayout
     private lateinit var geofenceList: ArrayList<Geofence>
     private lateinit var geofenceHelper: GeofenceHelper
+    private var isRideStarted : Boolean = false
 
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var geofencingClient: GeofencingClient
@@ -84,6 +86,9 @@ class MapsFragment : Fragment(), OnMapReadyCallback, OnMarkerClickListener {
         val mapFragment = childFragmentManager.findFragmentById(R.id.google_maps) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
+//        addGeofence(LatLng(55.6598883,12.59119))
+//        addCircle(LatLng(55.6598883,12.59119), 100.0)
+
         // Show the "end ride" overlay if a ride is ongoing.
         /*DatabaseOperations.getCurrentRideRef {
             if (it != null) {
@@ -106,6 +111,8 @@ class MapsFragment : Fragment(), OnMapReadyCallback, OnMarkerClickListener {
      */
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
+        // Set a listener for marker click.
+        googleMap.setOnMarkerClickListener(this)
 
         // Check if the user allows the application to access the location-aware resources.
         if (LocationService.checkPermission(requireContext()))
@@ -132,9 +139,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback, OnMarkerClickListener {
         // Move the Google Maps UI buttons under the OS top bar.
         googleMap.setPadding(0, 100, 0, 0)
 
-        // Set a listener for marker click.
-        googleMap.setOnMarkerClickListener(this)
-
         // Fetch list of scooters from the database.
         DatabaseOperations.getAllScooters {
             // Add a marker for each scooter.
@@ -151,25 +155,59 @@ class MapsFragment : Fragment(), OnMapReadyCallback, OnMarkerClickListener {
             }
         }
 
-        // create geofences
-//        geofenceList.add(
-//            Geofence.Builder()
-//                .setRequestId("ITU")
-//                .setCircularRegion(55.6598883,12.59119,100f)
-//                .setExpirationDuration(Geofence.NEVER_EXPIRE)
-//                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER or Geofence.GEOFENCE_TRANSITION_EXIT)
-//                .build())
-
-        addGeofence(LatLng(55.6598883,12.59119))
-
-
-        addCircle(LatLng(55.6598883,12.59119), 100.0)
-
         // Get device's location and move the camera.
         fusedLocationProviderClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null).addOnSuccessListener {
             val currentLocation = LatLng(it.latitude, it.longitude)
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 18f))
         }
+
+        val itu = LatLng(55.78664334654551, 12.522391826291)
+        val geofence = createGeofence("ITU", itu, 100.00)
+        geofenceList.add(geofence!!)
+
+        val geofencingRequest = geofenceHelper.getGeofencingRequest(geofence)
+
+
+        // create geofences
+        geofenceList.add(
+            Geofence.Builder()
+                .setRequestId("ITU")
+                .setCircularRegion(55.6598883,12.59119,100f)
+                .setExpirationDuration(Geofence.NEVER_EXPIRE)
+                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER or Geofence.GEOFENCE_TRANSITION_EXIT)
+                .build())
+
+        geofencingClient.addGeofences(geofencingRequest, geofencePendingIntent).run {
+            addOnSuccessListener {
+                Log.d(TAG, "Geofences added")
+            }
+            addOnFailureListener {
+                Log.d(TAG, "Failed to add geofences")
+            }
+        }
+
+        val geofencePendingIntent: PendingIntent by lazy {
+            val intent = Intent(requireContext(), GeofenceBroadcastReceiver::class.java)
+            PendingIntent.getBroadcast(requireContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+        }
+    }
+
+    private fun createGeofence(id: String, latLng: LatLng, radius: Double): Geofence? {
+        return geofenceHelper.getGeofence(id, latLng, radius,
+            Geofence.GEOFENCE_TRANSITION_ENTER or Geofence.GEOFENCE_TRANSITION_EXIT
+        )
+    }
+
+    private fun getGeofencingRequest(): GeofencingRequest {
+        return GeofencingRequest.Builder().apply {
+            setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER)
+            addGeofences(geofenceList)
+        }.build()
+    }
+
+    private val geofencePendingIntent: PendingIntent by lazy {
+        val intent = Intent(requireContext(), GeofenceBroadcastReceiver::class.java)
+        PendingIntent.getBroadcast(requireContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
     }
 
     private fun addCircle(location: LatLng, radius: Double) {
@@ -182,25 +220,38 @@ class MapsFragment : Fragment(), OnMapReadyCallback, OnMarkerClickListener {
         )
     }
 
-    private fun addGeofence(latLng: LatLng) {
-        val geofence = geofenceHelper.getGeofence(id.toString(), latLng, 100.00, Geofence.GEOFENCE_TRANSITION_ENTER or Geofence.GEOFENCE_TRANSITION_DWELL or Geofence.GEOFENCE_TRANSITION_EXIT)
-        val geofencingRequest = geofence?.let { geofenceHelper.getGeofencingRequest(it) }
-        val pendingIntent = geofenceHelper.pendingIntent
-        if (LocationService.checkPermission(requireContext()))
-            return
-        geofencingClient.addGeofences(geofencingRequest!!, pendingIntent)?.run {
-            addOnSuccessListener {
-                Log.d(TAG, "onSuccess: Geofence added")
-            }
-            addOnFailureListener {
-                Log.d(TAG, "onFailure: Error adding geofence")
-            }
-        }
-    }
+//    private fun addGeofence(latLng: LatLng) {
+//        val geofence = geofenceHelper.getGeofence(id.toString(), latLng, 100.00, Geofence.GEOFENCE_TRANSITION_ENTER or Geofence.GEOFENCE_TRANSITION_DWELL or Geofence.GEOFENCE_TRANSITION_EXIT)
+//        val geofencingRequest = geofence?.let { geofenceHelper.getGeofencingRequest(it) }
+//        val pendingIntent = geofenceHelper.pendingIntent
+//        if (LocationService.checkPermission(requireContext()))
+//            return
+//        geofencingClient.addGeofences(geofencingRequest!!, pendingIntent).run {
+//            addOnSuccessListener {
+//                Log.d(TAG, "onSuccess: Geofence added")
+//            }
+//            addOnFailureListener {
+//                Log.d(TAG, "onFailure: Error adding geofence")
+//            }
+//        }
+//    }
 
     override fun onMarkerClick(marker: Marker): Boolean {
         val scooter = marker.tag as? Scooter ?: return false
 
+        Geofence.Builder()
+            .setRequestId("ITU")
+            .setCircularRegion(55.676098, 12.568337, 100f)
+            .setExpirationDuration(Geofence.NEVER_EXPIRE)
+            .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER)
+            .build()
+
+
+        PendingIntent.getBroadcast(requireContext(),0,Intent(requireContext(), GeofenceBroadcastReceiver::class.java),
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+
+
+        isRideStarted = true
         // Set the text and image for the popup/overlay.
         startRideOverlay.findViewById<TextView>(R.id.scooter_name).text = scooter.name
 
@@ -255,7 +306,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, OnMarkerClickListener {
             .setCancelable(true)
             .setPositiveButton(R.string.yes) { _, _ ->
                 DatabaseOperations.endCurrentRide(requireContext())
-
+                isRideStarted = false
                 (view as ViewGroup).removeView(endRideOverlay)
             }
             .setNegativeButton(R.string.no) { dialog, _ ->
