@@ -5,8 +5,6 @@ import android.view.ViewGroup
 import com.firebase.ui.database.FirebaseRecyclerAdapter
 import com.firebase.ui.database.FirebaseRecyclerOptions
 import dk.itu.moapd.scootersharing.alia.databinding.ListScootersBinding
-import dk.itu.moapd.scootersharing.alia.interfaces.RideItemClickListener
-import dk.itu.moapd.scootersharing.alia.interfaces.ScooterItemClickListener
 import dk.itu.moapd.scootersharing.alia.models.Scooter
 import dk.itu.moapd.scootersharing.alia.utils.ScootersHolder
 

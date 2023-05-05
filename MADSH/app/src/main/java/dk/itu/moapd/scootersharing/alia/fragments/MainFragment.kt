@@ -77,11 +77,11 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.startRidePageButton.setOnClickListener {
-            findNavController().navigate(R.id.startRideFragment)
+        binding.buttonMaps.setOnClickListener {
+            findNavController().navigate(R.id.mapsFragment)
         }
-        binding.updateRidePageButton.setOnClickListener {
-            findNavController().navigate(R.id.updateRideFragment)
+        binding.listScootersButton.setOnClickListener {
+            findNavController().navigate(R.id.listScootersFragment)
         }
         binding.listRidesButton.setOnClickListener {
             findNavController().navigate(R.id.listRidesFragment)
@@ -89,12 +89,6 @@ class MainFragment : Fragment() {
         binding.buttonSignOut.setOnClickListener {
             auth.signOut()
             startLoginActivity()
-        }
-        binding.buttonMaps.setOnClickListener {
-            findNavController().navigate(R.id.mapsFragment)
-        }
-        binding.listScootersButton.setOnClickListener {
-            findNavController().navigate(R.id.listScootersFragment)
         }
     }
 

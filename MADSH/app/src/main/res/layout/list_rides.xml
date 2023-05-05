@@ -28,6 +28,52 @@
         android:background="@color/lightGrey">
     </View>
 
+    <TextView
+        android:id="@+id/ride_duration"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="@color/black">
+    </TextView>
+
+    <View
+        android:layout_width="1dp"
+        android:layout_height="26dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="80dp"
+        android:layout_marginEnd="16dp"
+        android:background="@color/lightGrey">
+    </View>
+
+    <TextView
+        android:id="@+id/ride_price"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="@color/black">
+    </TextView>
+
+    <View
+        android:layout_width="1dp"
+        android:layout_height="26dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="80dp"
+        android:layout_marginEnd="16dp"
+        android:background="@color/lightGrey">
+    </View>
+
     <ImageView
         android:id="@+id/delete_button"
         android:layout_width="24dp"
@@ -38,7 +84,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:src="@drawable/baseline_delete_24"
         app:tint="@color/black"
-        android:contentDescription="@string/content_description_image"
+        android:contentDescription="@string/deleteRide"
         android:layout_marginStart="300dp"
         />
 </androidx.constraintlayout.widget.ConstraintLayout>

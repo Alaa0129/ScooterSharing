@@ -70,7 +70,7 @@ class ListRidesFragment : Fragment(), RideItemClickListener {
 
     private fun showDeleteConfirmationDialog(position: Int) {
         MaterialAlertDialogBuilder(binding.root.context)
-            .setTitle(R.string.deleteRideDialogTitle)
+            .setTitle(R.string.deleteRide)
             .setMessage(R.string.deleteRideDialogMessage)
             .setCancelable(true)
             .setPositiveButton(R.string.yes) { _, _ ->

@@ -11,14 +11,8 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
-import dk.itu.moapd.scootersharing.alia.R
-import dk.itu.moapd.scootersharing.alia.adapters.RidesListFirebaseAdapter
 import dk.itu.moapd.scootersharing.alia.adapters.ScooterListFirebaseAdapter
-import dk.itu.moapd.scootersharing.alia.databinding.FragmentListRidesBinding
 import dk.itu.moapd.scootersharing.alia.databinding.FragmentListScootersBinding
-import dk.itu.moapd.scootersharing.alia.interfaces.RideItemClickListener
-import dk.itu.moapd.scootersharing.alia.interfaces.ScooterItemClickListener
-import dk.itu.moapd.scootersharing.alia.models.Ride
 import dk.itu.moapd.scootersharing.alia.models.Scooter
 
 class ListScootersFragment : Fragment() {
@@ -39,8 +33,7 @@ class ListScootersFragment : Fragment() {
         database = Firebase.database("https://scootersharing-jokf-alia-default-rtdb.europe-west1.firebasedatabase.app").reference
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         _binding = FragmentListScootersBinding.inflate(inflater, container, false)
         return binding.root
     }
