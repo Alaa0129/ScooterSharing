@@ -1,10 +1,13 @@
 package dk.itu.moapd.scootersharing.alia.fragments
 
 import android.Manifest
+import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,14 +16,13 @@ import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
-import com.google.android.gms.location.Priority
+import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
@@ -29,24 +31,38 @@ import dk.itu.moapd.scootersharing.alia.R
 import dk.itu.moapd.scootersharing.alia.models.Scooter
 import dk.itu.moapd.scootersharing.alia.services.LocationService
 import dk.itu.moapd.scootersharing.alia.utils.DatabaseOperations
+import dk.itu.moapd.scootersharing.alia.utils.GeofenceHelper
 
 class MapsFragment : Fragment(), OnMapReadyCallback, OnMarkerClickListener {
 
     private lateinit var startRideOverlay: FrameLayout
     private lateinit var endRideOverlay: FrameLayout
+    private lateinit var geofenceList: ArrayList<Geofence>
+    private lateinit var geofenceHelper: GeofenceHelper
 
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
+    private lateinit var geofencingClient: GeofencingClient
 
     companion object {
         private const val TAG = "MapsFragment"
         private var map: GoogleMap? = null
     }
 
+//    private val geofencePendingIntent: PendingIntent by lazy {
+//        val intent = Intent(this, GeofenceBroadcastReceiver::class.java)
+//        // We use FLAG_UPDATE_CURRENT so that we get the same pending intent back when calling
+//        // addGeofences() and removeGeofences().
+//        PendingIntent.getBroadcast(requireContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+//    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         DatabaseOperations.initialize(requireContext())
+        geofenceList = ArrayList()
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireContext())
+        geofencingClient = LocationServices.getGeofencingClient(requireContext())
+        geofenceHelper = GeofenceHelper(requireContext())
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -135,10 +151,50 @@ class MapsFragment : Fragment(), OnMapReadyCallback, OnMarkerClickListener {
             }
         }
 
+        // create geofences
+//        geofenceList.add(
+//            Geofence.Builder()
+//                .setRequestId("ITU")
+//                .setCircularRegion(55.6598883,12.59119,100f)
+//                .setExpirationDuration(Geofence.NEVER_EXPIRE)
+//                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER or Geofence.GEOFENCE_TRANSITION_EXIT)
+//                .build())
+
+        addGeofence(LatLng(55.6598883,12.59119))
+
+
+        addCircle(LatLng(55.6598883,12.59119), 100.0)
+
         // Get device's location and move the camera.
         fusedLocationProviderClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null).addOnSuccessListener {
             val currentLocation = LatLng(it.latitude, it.longitude)
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 18f))
+        }
+    }
+
+    private fun addCircle(location: LatLng, radius: Double) {
+        map?.addCircle(
+            CircleOptions()
+                .center(location)
+                .radius(radius)
+                .strokeColor(Color.BLUE)
+                .fillColor(Color.argb(50, 50, 50, 150))
+        )
+    }
+
+    private fun addGeofence(latLng: LatLng) {
+        val geofence = geofenceHelper.getGeofence(id.toString(), latLng, 100.00, Geofence.GEOFENCE_TRANSITION_ENTER or Geofence.GEOFENCE_TRANSITION_DWELL or Geofence.GEOFENCE_TRANSITION_EXIT)
+        val geofencingRequest = geofence?.let { geofenceHelper.getGeofencingRequest(it) }
+        val pendingIntent = geofenceHelper.pendingIntent
+        if (LocationService.checkPermission(requireContext()))
+            return
+        geofencingClient.addGeofences(geofencingRequest!!, pendingIntent)?.run {
+            addOnSuccessListener {
+                Log.d(TAG, "onSuccess: Geofence added")
+            }
+            addOnFailureListener {
+                Log.d(TAG, "onFailure: Error adding geofence")
+            }
         }
     }
 
