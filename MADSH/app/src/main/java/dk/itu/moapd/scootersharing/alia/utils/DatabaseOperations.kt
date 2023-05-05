@@ -20,11 +20,13 @@ import java.util.*
 
 class DatabaseOperations {
     companion object {
+        const val TAG = "DatabaseOperations"
+
+        private var user: FirebaseUser? = null
+
         private lateinit var database: DatabaseReference
         private lateinit var storage: StorageReference
         private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
-
-        private var user: FirebaseUser? = null
 
         fun initialize(context: Context) {
             database = Firebase.database("https://scootersharing-jokf-alia-default-rtdb.europe-west1.firebasedatabase.app").reference
@@ -158,7 +160,7 @@ class DatabaseOperations {
                             }
                         }
                     } else {
-                        Log.d("DatabaseOperations","No ongoing ride")
+                        Log.d(TAG,"No ongoing ride")
                     }
                 }
             }
@@ -169,11 +171,25 @@ class DatabaseOperations {
                 throw Exception("User is not logged in")
             else
             {
+                // Upload photo to Firebase Storage.
                 val today = Calendar.getInstance().time
                 val formatter = SimpleDateFormat("yyyy-MM-dd-HH-mm-ss", Locale.US)
                 val date = formatter.format(today)
                 val newPhotoRef = storage.child("scooter_images").child(scooterName).child("${date}.jpg")
-                newPhotoRef.putBytes(photo)
+                val uploadTask = newPhotoRef.putBytes(photo)
+                uploadTask.addOnFailureListener {
+                    Log.d(TAG, "Failed to upload photo")
+                }.addOnSuccessListener {
+                    Log.d(TAG, "Successfully uploaded photo")
+
+                    // Update scooter photo URL in database.
+                    newPhotoRef.downloadUrl.addOnSuccessListener {
+                        val scooterRef = getScooterRefByName(scooterName)
+                        scooterRef.child("lastPhoto").setValue(it.toString())
+                    }.addOnFailureListener {
+                        Log.d(TAG, "Failed to get photo URL")
+                    }
+                }
             }
         }
     }

@@ -1,18 +1,20 @@
 package dk.itu.moapd.scootersharing.alia.fragments
 
 import android.Manifest
-import android.content.Context
+import android.app.Activity.RESULT_OK
+import android.content.ActivityNotFoundException
 import android.content.Intent
-import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.os.Bundle
+import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.TextView
-import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
@@ -29,6 +31,7 @@ import dk.itu.moapd.scootersharing.alia.R
 import dk.itu.moapd.scootersharing.alia.models.Scooter
 import dk.itu.moapd.scootersharing.alia.services.LocationService
 import dk.itu.moapd.scootersharing.alia.utils.DatabaseOperations
+import java.io.ByteArrayOutputStream
 
 class MapsFragment : Fragment(), OnMapReadyCallback, OnMarkerClickListener {
 
@@ -37,8 +40,13 @@ class MapsFragment : Fragment(), OnMapReadyCallback, OnMarkerClickListener {
 
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
 
+    private var rideScooter: Scooter? = null
+
     companion object {
         private const val TAG = "MapsFragment"
+        private const val REQUEST_IMAGE_CAPTURE = 1
+        private const val REQUEST_CODE_PERMISSIONS = 10
+        private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
         private var map: GoogleMap? = null
     }
 
@@ -61,7 +69,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, OnMarkerClickListener {
             .findViewById(R.id.start_ride_overlay)
 
         endRideOverlay = LayoutInflater.from(requireContext())
-            .inflate(R.layout.popup_end_ride, null)
+            .inflate(R.layout.end_ride_overlay, null)
             .findViewById(R.id.end_ride_overlay)
 
         // Obtain the `SupportMapFragment` and get notified when the map is ready to be used.
@@ -147,6 +155,10 @@ class MapsFragment : Fragment(), OnMapReadyCallback, OnMarkerClickListener {
 
         // Set the text and image for the popup/overlay.
         startRideOverlay.findViewById<TextView>(R.id.scooter_name).text = scooter.name
+        Glide.with(requireContext())
+            .load(scooter.lastPhoto)
+            .into(startRideOverlay.findViewById(R.id.scooter_image))
+
 
         startRideOverlay.findViewById<Button>(R.id.start_ride_button).setOnClickListener {
             DatabaseOperations.startNewRide(scooter.name, scooter.latitude, scooter.longitude)
@@ -166,6 +178,19 @@ class MapsFragment : Fragment(), OnMapReadyCallback, OnMarkerClickListener {
         return true
     }
 
+    @Deprecated("Deprecated in Java")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            val imageBitmap = data?.extras?.get("data") as Bitmap
+            val imageAsByteArray = ByteArrayOutputStream()
+            imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, imageAsByteArray)
+            DatabaseOperations.uploadNewScooterPhoto(rideScooter!!.name, imageAsByteArray.toByteArray())
+            rideScooter = null
+        }
+    }
+
     private fun openEndRidePopup(scooter: Scooter) {
 
         endRideOverlay.findViewById<TextView>(R.id.scooter_name).text = scooter.name
@@ -175,6 +200,8 @@ class MapsFragment : Fragment(), OnMapReadyCallback, OnMarkerClickListener {
 
         endRideOverlay.findViewById<Button>(R.id.end_ride_button).setOnClickListener {
             showEndRideConfirmationDialog()
+
+            rideScooter = scooter
 
             fusedLocationProviderClient.lastLocation.addOnSuccessListener {
                 val marker = map?.addMarker(
@@ -201,8 +228,29 @@ class MapsFragment : Fragment(), OnMapReadyCallback, OnMarkerClickListener {
                 DatabaseOperations.endCurrentRide(requireContext())
 
                 (view as ViewGroup).removeView(endRideOverlay)
+
+                showTakePhotoDialog()
             }
             .setNegativeButton(R.string.no) { dialog, _ ->
+                dialog.cancel()
+            }
+            .show()
+    }
+
+    private fun showTakePhotoDialog() {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Take photo")
+            .setMessage("Please take a photo of the scooter")
+            .setCancelable(false)
+            .setPositiveButton("Take photo") { _, _ ->
+                val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                try {
+                    startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
+                } catch (e: ActivityNotFoundException) {
+                    // display error state to the user
+                }
+            }
+            .setNegativeButton("Close") { dialog, _ ->
                 dialog.cancel()
             }
             .show()
