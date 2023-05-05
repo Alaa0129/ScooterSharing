@@ -29,4 +29,7 @@
     <string name="placeholder_image_for_a_scooter">Placeholder image for a scooter</string>
     <string name="scooter_list">Available scooters</string>
     <string name="rent">Rent</string>
+    <string name="scooter_map">Scooter Map</string>
+    <string name="logo">Logo</string>
+    <string name="scan_to_start_a_ride">Scan to start a ride</string>
 </resources>

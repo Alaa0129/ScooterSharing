@@ -14,4 +14,22 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- Button to scan a qr code to start a ride  -->
+    <Button
+        android:id="@+id/button_maps"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:text="@string/scan_to_start_a_ride"
+        app:backgroundTint="@color/purple_350"
+        app:cornerRadius="100dp"
+        android:textAllCaps="false"
+        android:layout_gravity="center"
+        android:paddingHorizontal="25dp"
+        android:paddingVertical="15dp"
+        app:icon="@drawable/baseline_qr_code_scanner_24"
+        android:layout_marginBottom="50dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
