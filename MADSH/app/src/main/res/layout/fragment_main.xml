@@ -31,21 +31,6 @@
         app:icon="@drawable/baseline_map_24"
         android:layout_marginBottom="10dp"/>
 
-    <!-- Button to show list of available scooters -->
-    <Button
-        android:id="@+id/list_scooters_button"
-        android:layout_width="250dp"
-        android:layout_height="wrap_content"
-        android:text="@string/scooter_list"
-        app:backgroundTint="@color/purple_350"
-        app:cornerRadius="100dp"
-        android:textAllCaps="false"
-        android:layout_gravity="center"
-        android:paddingHorizontal="25dp"
-        android:paddingVertical="15dp"
-        app:icon="@drawable/baseline_electric_scooter_24"
-        android:layout_marginBottom="10dp"/>
-
     <!-- Button to show list of rides  -->
     <Button
         android:id="@+id/list_rides_button"

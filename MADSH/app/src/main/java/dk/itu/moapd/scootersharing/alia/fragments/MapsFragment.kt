@@ -254,10 +254,8 @@ class MapsFragment : Fragment(), OnMapReadyCallback, OnMarkerClickListener {
             .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER)
             .build()
 
-
         PendingIntent.getBroadcast(requireContext(),0,Intent(requireContext(), GeofenceBroadcastReceiver::class.java),
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
-
 
         isRideStarted = true
         // Set the text and image for the popup/overlay.
@@ -265,7 +263,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback, OnMarkerClickListener {
         Glide.with(requireContext())
             .load(scooter.lastPhoto)
             .into(startRideOverlay.findViewById(R.id.scooter_image))
-
 
         startRideOverlay.findViewById<Button>(R.id.start_ride_button).setOnClickListener {
             DatabaseOperations.startNewRide(scooter.name, scooter.latitude, scooter.longitude)
@@ -301,6 +298,9 @@ class MapsFragment : Fragment(), OnMapReadyCallback, OnMarkerClickListener {
     private fun openEndRidePopup(scooter: Scooter) {
 
         endRideOverlay.findViewById<TextView>(R.id.scooter_name).text = scooter.name
+        Glide.with(requireContext())
+            .load(scooter.lastPhoto)
+            .into(endRideOverlay.findViewById(R.id.scooter_image))
 
         if (LocationService.checkPermission(requireContext()))
             return

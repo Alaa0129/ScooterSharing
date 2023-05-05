@@ -80,9 +80,6 @@ class MainFragment : Fragment() {
         binding.buttonMaps.setOnClickListener {
             findNavController().navigate(R.id.mapsFragment)
         }
-        binding.listScootersButton.setOnClickListener {
-            findNavController().navigate(R.id.listScootersFragment)
-        }
         binding.listRidesButton.setOnClickListener {
             findNavController().navigate(R.id.listRidesFragment)
         }
