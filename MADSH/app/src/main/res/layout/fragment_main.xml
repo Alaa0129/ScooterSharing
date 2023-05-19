@@ -47,6 +47,21 @@
         app:icon="@drawable/baseline_format_list_bulleted_24"
         android:layout_marginBottom="10dp"/>
 
+    <!-- Button to show user profile  -->
+    <Button
+        android:id="@+id/user_profile"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:text="@string/my_profile"
+        app:backgroundTint="@color/purple_350"
+        app:cornerRadius="100dp"
+        android:textAllCaps="false"
+        android:layout_gravity="center"
+        android:paddingHorizontal="25dp"
+        android:paddingVertical="15dp"
+        app:icon="@drawable/baseline_person_24"
+        android:layout_marginBottom="10dp"/>
+
     <!-- Button to sign out  -->
     <Button
         android:id="@+id/button_sign_out"

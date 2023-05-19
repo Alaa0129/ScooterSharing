@@ -16,6 +16,9 @@
         <action
             android:id="@+id/action_mainFragment_to_mapsFragment"
             app:destination="@id/mapsFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_userProfile"
+            app:destination="@id/userProfile" />
     </fragment>
     <fragment
         android:id="@+id/listRidesFragment"
@@ -26,4 +29,8 @@
         android:id="@+id/mapsFragment"
         android:name="dk.itu.moapd.scootersharing.alia.fragments.MapsFragment"
         android:label="MapsFragment" />
+    <fragment
+        android:id="@+id/userProfile"
+        android:name="dk.itu.moapd.scootersharing.alia.fragments.UserProfile"
+        android:label="UserProfile" />
 </navigation>

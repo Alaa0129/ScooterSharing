@@ -34,6 +34,9 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    composeOptions{
+        kotlinCompilerExtensionVersion = "1.4.0-alpha02"
+    }
     kotlinOptions {
         jvmTarget = '1.8'
     }
@@ -41,6 +44,7 @@ android {
     buildFeatures {
         viewBinding = true
         dataBinding = true
+        compose = true
     }
 }
 
@@ -72,7 +76,14 @@ dependencies {
     implementation 'com.google.android.gms:play-services-location:21.0.1'
     implementation 'com.journeyapps:zxing-android-embedded:4.3.0'
     implementation 'com.google.android.gms:play-services-maps:18.1.0'
+    implementation "androidx.activity:activity-compose:1.7.1"
+    implementation 'androidx.compose.foundation:foundation:1.4.3'
+    implementation 'androidx.compose.runtime:runtime:1.4.3'
+    implementation 'androidx.compose.ui:ui:1.4.3'
+    implementation 'androidx.compose.ui:ui-tooling:1.4.3'
+    implementation 'androidx.compose.material:material:1.4.3'
     implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.8.0"))
+    implementation 'androidx.compose.ui:ui:1.4.3'
     testImplementation 'junit:junit:4.13.2'
     debugImplementation('androidx.fragment:fragment-testing:1.5.7')
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'

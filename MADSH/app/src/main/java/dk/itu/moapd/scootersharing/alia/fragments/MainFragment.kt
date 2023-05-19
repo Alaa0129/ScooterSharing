@@ -83,6 +83,9 @@ class MainFragment : Fragment() {
         binding.listRidesButton.setOnClickListener {
             findNavController().navigate(R.id.listRidesFragment)
         }
+        binding.userProfile.setOnClickListener {
+            findNavController().navigate(R.id.userProfile)
+        }
         binding.buttonSignOut.setOnClickListener {
             auth.signOut()
             startLoginActivity()

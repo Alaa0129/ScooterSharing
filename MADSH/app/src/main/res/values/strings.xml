@@ -30,6 +30,12 @@
     <string name="scooter_list">Available scooters</string>
     <string name="rent">Rent</string>
     <string name="logo">Logo</string>
+    <string name="user_profile">User Profile</string>
     <string name="scan_to_start_a_ride">Scan to start a ride</string>
     <string name="click_to_delete">Click to delete</string>
+    <string name="my_profile">My Profile</string>
+    <string name="change_mail">Change email</string>
+    <string name="change_password">Change password</string>
+    <string name="payment">Payment</string>
+    <string name="settings">Settings</string>
 </resources>
