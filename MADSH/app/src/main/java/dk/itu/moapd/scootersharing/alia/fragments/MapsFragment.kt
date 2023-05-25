@@ -1,6 +1,5 @@
 package dk.itu.moapd.scootersharing.alia.fragments
 
-import android.Manifest
 import android.app.Activity.RESULT_OK
 import android.app.PendingIntent
 import android.content.ActivityNotFoundException
@@ -42,7 +41,6 @@ import dk.itu.moapd.scootersharing.alia.utils.DatabaseOperations
 import dk.itu.moapd.scootersharing.alia.utils.GeofenceBroadcastReceiver
 import dk.itu.moapd.scootersharing.alia.utils.GeofenceHelper
 import java.io.ByteArrayOutputStream
-import kotlin.math.log
 
 class MapsFragment : Fragment(), OnMapReadyCallback, OnMarkerClickListener {
 
@@ -57,7 +55,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback, OnMarkerClickListener {
             "Cannot access binding because it is null. Is the view visible?"
         }
 
-
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var geofencingClient: GeofencingClient
 
@@ -66,17 +63,13 @@ class MapsFragment : Fragment(), OnMapReadyCallback, OnMarkerClickListener {
     companion object {
         private const val TAG = "MapsFragment"
         private const val REQUEST_IMAGE_CAPTURE = 1
-        private const val REQUEST_CODE_PERMISSIONS = 10
-        private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
         private var map: GoogleMap? = null
     }
 
-//    private val geofencePendingIntent: PendingIntent by lazy {
-//        val intent = Intent(this, GeofenceBroadcastReceiver::class.java)
-//        // We use FLAG_UPDATE_CURRENT so that we get the same pending intent back when calling
-//        // addGeofences() and removeGeofences().
-//        PendingIntent.getBroadcast(requireContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-//    }
+    private val geofencePendingIntent: PendingIntent by lazy {
+        val intent = Intent(requireContext(), GeofenceBroadcastReceiver::class.java)
+        PendingIntent.getBroadcast(requireContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -123,25 +116,20 @@ class MapsFragment : Fragment(), OnMapReadyCallback, OnMarkerClickListener {
                     .setBeepEnabled(false)
             )
         }
-
-
-
-//        addGeofence(LatLng(55.6598883,12.59119))
-//        addCircle(LatLng(55.6598883,12.59119), 100.0)
-
-        // Show the "end ride" overlay if a ride is ongoing.
-        /*DatabaseOperations.getCurrentRideRef {
-            if (it != null) {
-
-
-                DatabaseOperations.getScooterDetailsByName(it.child())
-            }
-        }*/
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+
+        geofencingClient.removeGeofences(geofencePendingIntent).run {
+            addOnSuccessListener {
+                Log.d(TAG, "Geofences removed")
+            }
+            addOnFailureListener {
+                Log.d(TAG, "Geofences not removed")
+            }
+        }
     }
 
     /**
@@ -207,20 +195,12 @@ class MapsFragment : Fragment(), OnMapReadyCallback, OnMarkerClickListener {
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 18f))
         }
 
-        val itu = LatLng(55.78664334654551, 12.522391826291)
-        val geofence = createGeofence("ITU", itu, 100.00)
+        val itu = LatLng(55.65971842977991, 12.59103303501808)
+
+        val geofence = geofenceHelper.getGeofence("ITU", itu, 100f)
         geofenceList.add(geofence!!)
 
         val geofencingRequest = geofenceHelper.getGeofencingRequest(geofence)
-
-        // create geofences
-        geofenceList.add(
-            Geofence.Builder()
-                .setRequestId("ITU")
-                .setCircularRegion(55.6598883,12.59119,100f)
-                .setExpirationDuration(Geofence.NEVER_EXPIRE)
-                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER or Geofence.GEOFENCE_TRANSITION_EXIT)
-                .build())
 
         geofencingClient.addGeofences(geofencingRequest, geofencePendingIntent).run {
             addOnSuccessListener {
@@ -231,28 +211,9 @@ class MapsFragment : Fragment(), OnMapReadyCallback, OnMarkerClickListener {
             }
         }
 
-        val geofencePendingIntent: PendingIntent by lazy {
-            val intent = Intent(requireContext(), GeofenceBroadcastReceiver::class.java)
-            PendingIntent.getBroadcast(requireContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+        geofenceList.forEach {
+            addCircle(LatLng(it.latitude, it.longitude), 100.00)
         }
-    }
-
-    private fun createGeofence(id: String, latLng: LatLng, radius: Double): Geofence? {
-        return geofenceHelper.getGeofence(id, latLng, radius,
-            Geofence.GEOFENCE_TRANSITION_ENTER or Geofence.GEOFENCE_TRANSITION_EXIT
-        )
-    }
-
-    private fun getGeofencingRequest(): GeofencingRequest {
-        return GeofencingRequest.Builder().apply {
-            setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER)
-            addGeofences(geofenceList)
-        }.build()
-    }
-
-    private val geofencePendingIntent: PendingIntent by lazy {
-        val intent = Intent(requireContext(), GeofenceBroadcastReceiver::class.java)
-        PendingIntent.getBroadcast(requireContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
     }
 
     private fun addCircle(location: LatLng, radius: Double) {
@@ -264,22 +225,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback, OnMarkerClickListener {
                 .fillColor(Color.argb(50, 50, 50, 150))
         )
     }
-
-//    private fun addGeofence(latLng: LatLng) {
-//        val geofence = geofenceHelper.getGeofence(id.toString(), latLng, 100.00, Geofence.GEOFENCE_TRANSITION_ENTER or Geofence.GEOFENCE_TRANSITION_DWELL or Geofence.GEOFENCE_TRANSITION_EXIT)
-//        val geofencingRequest = geofence?.let { geofenceHelper.getGeofencingRequest(it) }
-//        val pendingIntent = geofenceHelper.pendingIntent
-//        if (LocationService.checkPermission(requireContext()))
-//            return
-//        geofencingClient.addGeofences(geofencingRequest!!, pendingIntent).run {
-//            addOnSuccessListener {
-//                Log.d(TAG, "onSuccess: Geofence added")
-//            }
-//            addOnFailureListener {
-//                Log.d(TAG, "onFailure: Error adding geofence")
-//            }
-//        }
-//    }
 
     override fun onMarkerClick(marker: Marker): Boolean {
         val scooter = marker.tag as? Scooter ?: return false
@@ -294,7 +239,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, OnMarkerClickListener {
         PendingIntent.getBroadcast(requireContext(),0,Intent(requireContext(), GeofenceBroadcastReceiver::class.java),
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
 
-        startRide(scooter)
+        openStartRidePopup(scooter)
         if (isRideStarted) {
             marker.remove()
         }
@@ -314,7 +259,18 @@ class MapsFragment : Fragment(), OnMapReadyCallback, OnMarkerClickListener {
         }
     }
 
-    private fun startRide(scooter: Scooter) {
+    private fun openStartRidePopup(scooter: Scooter) {
+
+        // Check if scooter location is within a geofence. If not, return.
+        val isInGeofence = geofenceList.any { geofence ->
+            val latLng = LatLng(scooter.latitude, scooter.longitude)
+            geofenceHelper.isInGeofence(geofence, latLng)
+        }
+        if (!isInGeofence) {
+            Toast.makeText(requireContext(), "The scooter is not in a geofence", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         isRideStarted = true
         // Set the text and image for the popup/overlay.
         startRideOverlay.findViewById<TextView>(R.id.scooter_name).text = scooter.name
@@ -405,9 +361,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, OnMarkerClickListener {
             .show()
     }
 
-    private val barcodeLauncher = registerForActivityResult(
-        ScanContract()
-    ) { result: ScanIntentResult ->
+    private val barcodeLauncher = registerForActivityResult(ScanContract()) { result: ScanIntentResult ->
         if (result.contents == null) {
             Toast.makeText(requireContext(), "Cancelled", Toast.LENGTH_LONG).show()
         } else {
@@ -416,7 +370,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, OnMarkerClickListener {
                 if (it != null) {
                     if (result.contents == it.name) {
                         Toast.makeText(requireContext(), "Scanned: ${result.contents}", Toast.LENGTH_LONG).show()
-                        startRide(it)
+                        openStartRidePopup(it)
                     } else {
                         Toast.makeText(requireContext(), "Wrong QR code", Toast.LENGTH_LONG).show()
                     }
@@ -424,41 +378,4 @@ class MapsFragment : Fragment(), OnMapReadyCallback, OnMarkerClickListener {
             }
         }
     }
-
-
-
-//    private fun launchScanner() {
-//        val integrator = IntentIntegrator.forSupportFragment(this)
-//        integrator.setPrompt("Scan a QR code")
-//        integrator.setOrientationLocked(false)
-//        integrator.setBeepEnabled(false)
-//        integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE)
-//        launcher.launch(integrator.createScanIntent())
-//    }
-//
-//    private val launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-//        val data = result.data
-//        if (data != null) {
-//            val intentResult = IntentIntegrator.parseActivityResult(result.resultCode, data)
-//            if (intentResult?.contents != null) {
-//                scooterViewModel.scooter.observe(viewLifecycleOwner) { scooter ->
-//                    viewLifecycleOwner.lifecycleScope.launch {
-//                        if (intentResult.contents == scooter.name) {
-//                            if(!scooter.isStarted) {
-//                                // start scooter og andet vigtigt ift. jeres implementation
-//                            }
-//                            updateScooter(scooter) //her opdaterer i scooteren i databasen
-//                        } else {
-//                            Toast.makeText(requireContext(),"Cannot start ride",Toast.LENGTH_SHORT).show()
-//                        }
-//                    }
-//                }
-//            } else {
-//                Toast.makeText(requireContext(), "Cancelled", Toast.LENGTH_LONG).show()
-//            }
-//        } else {
-//            Toast.makeText(requireContext(), "No data", Toast.LENGTH_LONG).show()
-//        }
-//    }
-
 }

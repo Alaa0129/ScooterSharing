@@ -21,7 +21,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ScooterSharing"
         tools:targetApi="31">
-        <receiver android:name=".utils.GeofenceBroadcastReceiver"/>
+        <receiver
+            android:name=".utils.GeofenceBroadcastReceiver"
+            android:exported="false" />
         <service
             android:name=".services.LocationService"
             android:enabled="true"
