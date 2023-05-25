@@ -60,6 +60,14 @@ class MapsFragment : Fragment(), OnMapReadyCallback, OnMarkerClickListener {
 
     private var rideScooter: Scooter? = null
 
+    private val geofences = arrayOf(
+        Pair("Work", LatLng(55.69830869550268, 12.594557535634586)),
+        Pair("Field's", LatLng(55.63030077620276, 12.577225786438577)),
+        Pair("Istedgade", LatLng(55.669934673056275, 12.555864126526753)),
+        Pair("Allinge", LatLng(55.27535936717475, 14.799058476764278)),
+        Pair("ITU", LatLng(55.65964973546987, 12.59095783955669))
+    )
+
     companion object {
         private const val TAG = "MapsFragment"
         private const val REQUEST_IMAGE_CAPTURE = 1
@@ -195,12 +203,13 @@ class MapsFragment : Fragment(), OnMapReadyCallback, OnMarkerClickListener {
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 18f))
         }
 
-        val itu = LatLng(55.65971842977991, 12.59103303501808)
+        geofences.forEach {
+            val geofence = geofenceHelper.getGeofence(it.first, it.second, 100f)
+            geofenceList.add(geofence!!)
+            addCircle(it.second, 300.00)
+        }
 
-        val geofence = geofenceHelper.getGeofence("ITU", itu, 100f)
-        geofenceList.add(geofence!!)
-
-        val geofencingRequest = geofenceHelper.getGeofencingRequest(geofence)
+        val geofencingRequest = geofenceHelper.getGeofencingRequest(geofenceList)
 
         geofencingClient.addGeofences(geofencingRequest, geofencePendingIntent).run {
             addOnSuccessListener {
@@ -209,10 +218,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback, OnMarkerClickListener {
             addOnFailureListener {
                 Log.d(TAG, "Failed to add geofences")
             }
-        }
-
-        geofenceList.forEach {
-            addCircle(LatLng(it.latitude, it.longitude), 100.00)
         }
     }
 

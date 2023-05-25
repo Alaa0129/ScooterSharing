@@ -8,9 +8,9 @@ import com.google.android.gms.location.GeofencingRequest
 import com.google.android.gms.maps.model.LatLng
 
 class GeofenceHelper(context: Context) : ContextWrapper(context) {
-    fun getGeofencingRequest(geofence: Geofence) : GeofencingRequest {
+    fun getGeofencingRequest(geofences: List<Geofence>) : GeofencingRequest {
         return GeofencingRequest.Builder().apply {
-            addGeofence(geofence)
+            addGeofences(geofences)
             setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER)
         }.build()
     }
